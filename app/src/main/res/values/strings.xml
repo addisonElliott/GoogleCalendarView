@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Sample GoogleCalendarView</string>
+
+    <string name="calendars">Calendars</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="night">Night</string>
 </resources>
