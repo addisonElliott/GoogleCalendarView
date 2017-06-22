@@ -26,7 +26,7 @@ public class CalendarUtils
     /**
      * {@link android.content.SharedPreferences} int value for week start
      *
-     * @see {@link #sWeekStart}
+     * @see #sWeekStart
      */
     public static final String PREF_WEEK_START = "weekStart";
     public static final String PREF_CALENDAR_EXCLUSIONS = "calendarExclusions";
@@ -34,7 +34,7 @@ public class CalendarUtils
     /**
      * Static value for week start
      *
-     * @see {@link #PREF_WEEK_START}
+     * @see #PREF_WEEK_START
      */
     public static int sWeekStart = Calendar.SUNDAY;
 

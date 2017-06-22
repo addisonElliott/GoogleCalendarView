@@ -1,16 +1,13 @@
 package com.aelliott.googlecalendarview.widget;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.TypedArray;
 import android.database.ContentObserver;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.CalendarContract;
-import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
@@ -22,16 +19,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.aelliott.googlecalendarview.CalendarUtils;
+import com.aelliott.googlecalendarview.R;
+import com.aelliott.googlecalendarview.content.EventCursor;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
-import com.aelliott.googlecalendarview.CalendarUtils;
-
 // TODO Remove this?
 //import io.github.hidroh.calendar.EditActivity;
-
-import com.aelliott.googlecalendarview.R;
-import com.aelliott.googlecalendarview.content.EventCursor;
 
 /**
  * 'Unlimited' adapter that load more and prune items
@@ -148,7 +144,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * {@link #bindEvents(long, EventCursor)} should be called afterwards with results
      *
      * @param timeMillis time in millis that represents day in agenda
-     * @see {@link #bindEvents(long, EventCursor)}
+     * @see #bindEvents(long, EventCursor)
      */
     protected void loadEvents(long timeMillis)
     {
@@ -163,8 +159,8 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      *
      * @param timeMillis time in millis that represents day in agenda
      * @param cursor     {@link CalendarContract.Events} cursor wrapper
-     * @see {@link #loadEvents(long)}
-     * @see {@link #deactivate()}
+     * @see #loadEvents(long)
+     * @see #deactivate()
      */
     public final void bindEvents(long timeMillis, EventCursor cursor)
     {
@@ -190,7 +186,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * that have been previously bound by {@link #bindEvents(long, EventCursor)},
      * wipes all adapter data
      *
-     * @see {@link #bindEvents(long, EventCursor)}
+     * @see #bindEvents(long, EventCursor)
      */
     void deactivate()
     {
@@ -202,7 +198,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * that have been previously bound by {@link #bindEvents(long, EventCursor)},
      * but keeps adapter data to rebind new cursors
      *
-     * @see {@link #bindEvents(long, EventCursor)}
+     * @see #bindEvents(long, EventCursor)
      */
     void invalidate()
     {
@@ -214,7 +210,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * Saves this adapter state
      *
      * @return saved state
-     * @see {@link #restoreState(Bundle)}
+     * @see #restoreState(Bundle)
      */
     Bundle saveState()
     {
@@ -227,7 +223,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * Restores adapter's previously saved state
      *
      * @param savedState saved state
-     * @see {@link #saveState()}
+     * @see #saveState()
      */
     void restoreState(Bundle savedState)
     {
@@ -285,7 +281,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * Last days in adapter may be pruned to keep its size constantly small.
      *
      * @param context resources provider
-     * @see {@link #append(Context)}
+     * @see #append(Context)
      */
     void prepend(Context context)
     {
@@ -308,7 +304,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * First days in adapter may be pruned to keep its size constantly small.
      *
      * @param context resources provider
-     * @see {@link #prepend(Context)}
+     * @see #prepend(Context)
      */
     void append(Context context)
     {
@@ -343,7 +339,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * This can be used in case {@link RecyclerView} is being scrolled and binding
      * needs to be disabled temporarily to prevent scroll offset changes
      *
-     * @see {@link #unlockBinding()}
+     * @see #unlockBinding()
      */
     void lockBinding()
     {
@@ -354,7 +350,7 @@ public abstract class AgendaAdapter extends RecyclerView.Adapter<AgendaAdapter.R
      * Unlocks view holder binding that may have been previously locked by {@link #lockBinding()},
      * notifying adapter to rebind view holders as a result
      *
-     * @see {@link #loadEvents(long)}
+     * @see #loadEvents(long)
      */
     void unlockBinding()
     {

@@ -117,9 +117,8 @@ public class AgendaView extends RecyclerView
     public void setAdapter(Adapter adapter)
     {
         if (adapter != null && !(adapter instanceof AgendaAdapter))
-        {
             throw new IllegalArgumentException("Adapter must be an instance of AgendaAdapter");
-        }
+
         mAdapter = (AgendaAdapter)adapter;
         if (mAdapter != null)
         {

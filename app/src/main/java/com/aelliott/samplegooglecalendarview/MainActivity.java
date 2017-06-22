@@ -282,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     private void setUpContentView()
     {
-        mCoordinatorLayout = findViewById(R.id.coordinator_layout);
+        /*mCoordinatorLayout = findViewById(R.id.coordinator_layout);
         mCalendarSelectionView = (CalendarSelectionView)findViewById(R.id.list_view_calendar);
         //noinspection ConstantConditions
         mCalendarSelectionView.setOnSelectionChangeListener(mCalendarSelectionListener);
@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
         //noinspection ConstantConditions
-        mFabAdd.hide();
+        mFabAdd.hide();*/
     }
 
     private void toggleCalendarView()
@@ -335,7 +335,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @SuppressWarnings("ConstantConditions")
     private void toggleEmptyView(boolean visible)
     {
-        if (visible)
+        /*if (visible)
         {
             findViewById(R.id.empty).setVisibility(View.VISIBLE);
             findViewById(R.id.empty).bringToFront();
@@ -351,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         else
         {
             findViewById(R.id.empty).setVisibility(View.GONE);
-        }
+        }*/
     }
 
     private void changeWeekStart(@IdRes int selection)

@@ -179,7 +179,7 @@ class MonthViewPagerAdapter extends PagerAdapter {
      * Gets cursor for calendar events at given position
      * @param position    adapter position
      * @return  {@link android.provider.CalendarContract.Events} cursor wrapper or null
-     * @see {@link #swapCursor(long, EventCursor, ContentObserver)}
+     * @see #swapCursor(long, EventCursor, ContentObserver)
      */
     EventCursor getCursor(int position) {
         return mCursors.get(position);

@@ -19,10 +19,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="UnusedAttribute" />
-
+<!--
     <com.aelliott.googlecalendarview.widget.AgendaView
         android:id="@id/agenda_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        tools:listitem="@layout/list_item_content"
+        tools:listheader="@layout/list_item_header"/>
+-->
 </LinearLayout>

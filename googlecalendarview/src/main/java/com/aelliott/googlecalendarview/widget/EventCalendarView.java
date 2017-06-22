@@ -20,7 +20,6 @@ import com.aelliott.googlecalendarview.content.EventCursor;
  */
 public class EventCalendarView extends ViewPager
 {
-
     private final MonthView.OnDateChangeListener mDateChangeListener = new MonthView.OnDateChangeListener()
     {
         @Override
@@ -64,7 +63,7 @@ public class EventCalendarView extends ViewPager
          * Loads events for given month. Should call {@link #bindEvents(long, EventCursor)} on complete
          *
          * @param monthMillis month in milliseconds
-         * @see {@link #bindEvents(long, EventCursor)}
+         * @see #bindEvents(long, EventCursor)
          */
         protected void loadEvents(long monthMillis)
         {
@@ -121,7 +120,7 @@ public class EventCalendarView extends ViewPager
     /**
      * Sets selected day, automatically move to next/previous month
      * if given day is not within active month
-     * TODO assume that min left month < selectedDay < max right month
+     * TODO assume that min left month &lt; selectedDay &gt; max right month
      *
      * @param dayMillis new selected day in milliseconds
      */
@@ -151,7 +150,7 @@ public class EventCalendarView extends ViewPager
      * to deactivate active data bindings
      *
      * @param adapter calendar events adapter
-     * @see {@link #deactivate()}
+     * @see #deactivate()
      */
     public void setCalendarAdapter(@NonNull CalendarAdapter adapter)
     {
@@ -163,7 +162,7 @@ public class EventCalendarView extends ViewPager
     /**
      * Clears any active data bindings from adapter
      *
-     * @see {@link #setCalendarAdapter(CalendarAdapter)}
+     * @see #setCalendarAdapter(CalendarAdapter)
      */
     public void deactivate()
     {

@@ -63,7 +63,7 @@ public abstract class EventsQueryHandler extends AsyncQueryHandler
      * @param cookie          cookie object to be passed back on complete
      * @param startTimeMillis start time in milliseconds
      * @param endTimeMillis   end time in milliseconds
-     * @see {@link #handleQueryComplete(int, Object, EventCursor)}
+     * @see #handleQueryComplete(int, Object, EventCursor)
      */
     public final void startQuery(Object cookie, long startTimeMillis, long endTimeMillis)
     {
@@ -117,7 +117,7 @@ public abstract class EventsQueryHandler extends AsyncQueryHandler
      * @param token  query token
      * @param cookie query cookie
      * @param cursor {@link android.provider.CalendarContract.Events} cursor wrapper
-     * @see {@link #startQuery(int, Object, Uri, String[], String, String[], String)}
+     * @see #startQuery(int, Object, Uri, String[], String, String[], String)
      */
     protected abstract void handleQueryComplete(int token, Object cookie, EventCursor cursor);
 }

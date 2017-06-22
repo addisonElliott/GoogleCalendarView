@@ -61,7 +61,7 @@ public class EventCursor extends CursorWrapper
      * If {@link #getAllDay()} is true, time will be midnight in UTC.
      *
      * @return start time in milliseconds
-     * @see {@link #getAllDay()}
+     * @see #getAllDay()
      */
     public long getDateTimeStart()
     {
@@ -73,7 +73,7 @@ public class EventCursor extends CursorWrapper
      * If {@link #getAllDay()} is true, time will be midnight in UTC.
      *
      * @return end time in milliseconds
-     * @see {@link #getAllDay()}
+     * @see #getAllDay()
      */
     public long getDateTimeEnd()
     {
@@ -84,8 +84,8 @@ public class EventCursor extends CursorWrapper
      * Checks if event is all day. All-day event has start and end time midnight in UTC.
      *
      * @return true if all-day event, false otherwise
-     * @see {@link #getDateTimeStart()}
-     * @see {@link #getDateTimeEnd()}
+     * @see #getDateTimeStart()
+     * @see #getDateTimeEnd()
      */
     public boolean getAllDay()
     {
