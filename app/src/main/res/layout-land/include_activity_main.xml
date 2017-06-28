@@ -8,10 +8,12 @@
     tools:showIn="@layout/activity_main"
     tools:ignore="MergeRootFrame">
 
-    <com.aelliott.googlecalendarview.widget.AgendaView
-        android:id="@id/agenda_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <!-- <com.aelliott.googlecalendarview.widget.AgendaView
+         android:id="@id/agenda_view"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" />
+
+     -->
     <!--
         <com.aelliott.googlecalendarview.widget.EventCalendarView
             android:id="@id/calendar_view"

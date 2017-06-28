@@ -1,81 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context="com.aelliott.samplegooglecalendarview.MainActivity">
 
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <include
+        layout="@layout/toolbar_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"/>
 
-        <android.support.design.widget.CoordinatorLayout
-            android:id="@+id/coordinator_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity">
+    <include
+        layout="@layout/include_activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/include"/>
 
-            <include
-                layout="@layout/toolbar_main"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+    <CheckedTextView
+        android:id="@+id/checkedTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="CheckedTextView"
+        app:layout_anchor="@+id/include"
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
+        app:layout_anchorGravity="top|left"/>
 
-            <include
-                layout="@layout/include_activity_main"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-<!--
-            <android.support.design.widget.FloatingActionButton
-                xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_anchor="@+id/agenda_view"
-                app:layout_anchorGravity="bottom|right|end"
-                app:srcCompat="@drawable/ic_add_white_24dp"
-                tools:showIn="@layout/activity_main"/>
--->
-        </android.support.design.widget.CoordinatorLayout>
-        <!--
-                <LinearLayout
-                    android:id="@+id/drawer"
-                    style="@style/Widget.AppTheme.Drawer"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="start"
-                    android:background="?android:attr/colorBackground"
-                    android:divider="@drawable/horizontal_divider"
-                    android:orientation="vertical"
-                    android:showDividers="middle">
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:background="@color/blue500"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:text="CheckBox"
+        app:layout_anchor="@+id/include"
+        android:button="@null"
+        android:drawableRight="@drawable/ic_expand_more_white_24dp"
+        app:layout_anchorGravity="top|right"/>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="@dimen/horizontal_padding"
-                        android:paddingRight="@dimen/horizontal_padding"
-                        android:text="@string/calendars"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
-
-                    <com.aelliott.googlecalendarview.widget.CalendarSelectionView
-                        android:id="@+id/list_view_calendar"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="@color/colorDivider"
-                        android:dividerHeight="@dimen/divider_size"/>
-
-                </LinearLayout>
-        -->
-    </android.support.v4.widget.DrawerLayout>
-    <!--
-        <ViewStub
-            android:id="@+id/empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:inflatedId="@+id/empty"
-            android:layout="@layout/empty_permission"/>
-    -->
-</merge>
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:text="Button"
+        android:drawableRight="@drawable/ic_expand_more_white_24dp"
+        android:background="@color/blue500"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="center_vertical|left"/>
+</android.support.design.widget.CoordinatorLayout>

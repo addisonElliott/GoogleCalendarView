@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.aelliott.samplegooglecalendarview">
-
-    <!-- Required by Calendar Provider
+    <!--
+     Required by Calendar Provider
     <uses-permission android:name="android.permission.READ_CALENDAR" />
-    <uses-permission android:name="android.permission.WRITE_CALENDAR" />-->
-
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    -->
     <application
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup"
@@ -15,17 +15,19 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
-
         <activity
             android:name=".EditActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
+        <activity android:name=".Testing">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
     </application>
+
 </manifest>

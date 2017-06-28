@@ -1,39 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.AppBarLayout
+    android:id="@+id/appBarLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:showIn="@layout/activity_main">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:background="?attr/colorPrimary"
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/collapsingToolbarLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
+        app:contentScrim="?attr/colorPrimary"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed"
+        app:statusBarScrim="?attr/colorPrimaryDark">
 
-        <FrameLayout
-            android:id="@+id/toolbar_toggle_frame"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:ignore="InconsistentLayout">
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <CheckedTextView
-                android:id="@+id/toolbar_toggle"
-                android:text="@string/app_name"
-                tools:text="March 2016"
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:checkMark="@drawable/ic_expand_toggle_white_24dp"
-                android:freezesText="true"
-                android:paddingLeft="@dimen/padding"
-                android:paddingRight="@dimen/padding"
+            <FrameLayout
+                android:id="@+id/frameLayout_toolbarToggle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                tools:ignore="InconsistentLayout">
 
-        </FrameLayout>
+                <CheckedTextView
+                    android:id="@+id/checkedTextView_toolbarTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checkMark="@drawable/ic_expand_toggle_white_24dp"
+                    android:freezesText="true"
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingRight="@dimen/padding"
+                    android:text="@string/app_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    tools:text="March 2016"/>
 
-    </android.support.v7.widget.Toolbar>
+            </FrameLayout>
 
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.CollapsingToolbarLayout>
 </android.support.design.widget.AppBarLayout>
+

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="CalendarScrollingBehavior">
+        <attr name="behavior_dragType" format="enum">
+            <enum name="normal" value="0"/>
+            <enum name="denyAll" value="1"/>
+            <enum name="allowAll" value="2"/>
+        </attr>
+
+        <attr name="behavior_scrollTopAction" format="enum">
+            <enum name="none" value="0"/>
+            <enum name="open" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>

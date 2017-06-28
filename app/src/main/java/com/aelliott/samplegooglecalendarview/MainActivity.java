@@ -1,106 +1,49 @@
 package com.aelliott.samplegooglecalendarview;
 
-import android.Manifest;
-import android.content.AsyncQueryHandler;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.provider.CalendarContract;
-import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.DrawerLayout;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
-import android.text.format.DateUtils;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
 import android.widget.CheckedTextView;
-import android.widget.TextView;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.HashSet;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-import com.aelliott.googlecalendarview.CalendarUtils;
-import com.aelliott.googlecalendarview.content.CalendarCursor;
-import com.aelliott.googlecalendarview.content.EventCursor;
-import com.aelliott.googlecalendarview.content.EventsQueryHandler;
-import com.aelliott.googlecalendarview.widget.AgendaAdapter;
-import com.aelliott.googlecalendarview.widget.AgendaView;
-import com.aelliott.googlecalendarview.widget.CalendarSelectionView;
-import com.aelliott.googlecalendarview.widget.EventCalendarView;
-
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>
+public class MainActivity extends AppCompatActivity
 {
-    private static final String STATE_TOOLBAR_TOGGLE = "state:toolbarToggle";
-    private static final int REQUEST_CODE_CALENDAR = 0;
-    private static final int REQUEST_CODE_LOCATION = 1;
-    private static final String SEPARATOR = ",";
-    private static final int LOADER_CALENDARS = 0;
-    private static final int LOADER_LOCAL_CALENDAR = 1;
-
-    private final CalendarSelectionView.OnSelectionChangeListener mCalendarSelectionListener = new CalendarSelectionView.OnSelectionChangeListener()
-    {
-        @Override
-        public void onSelectionChange(long id, boolean enabled)
-        {
-            if (!enabled)
-                mExcludedCalendarIds.add(String.valueOf(id));
-            else
-                mExcludedCalendarIds.remove(String.valueOf(id));
-
-            mCalendarView.invalidateData();
-            mAgendaView.invalidateData();
-        }
-    };
-    private final Coordinator mCoordinator = new Coordinator();
-    private View mCoordinatorLayout;
-    private CheckedTextView mToolbarToggle;
-    private EventCalendarView mCalendarView;
-    private AgendaView mAgendaView;
-    private FloatingActionButton mFabAdd;
-    private CalendarSelectionView mCalendarSelectionView;
-    private ActionBarDrawerToggle mDrawerToggle;
-    private DrawerLayout mDrawerLayout;
-    private View mDrawer;
-    private final HashSet<String> mExcludedCalendarIds = new HashSet<>();
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    ActionBar actionBar;
+    @BindView(R.id.collapsingToolbarLayout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.appBarLayout)
+    AppBarLayout appBarLayout;
+    @BindView(R.id.checkedTextView_toolbarTitle)
+    CheckedTextView toolbarTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setUpPreferences();
         setContentView(R.layout.activity_main);
 
-        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
-        //noinspection ConstantConditions
-        getSupportActionBar().setDisplayOptions(
-                ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
+        // Initialize all variables annotated with @BindView and other variants
+        ButterKnife.bind(this);
 
-        setUpContentView();
+        setSupportActionBar(toolbar);
+        actionBar = getSupportActionBar();
+
+        // Temporary
+        toolbarTitle.setText("March 2016");
+        actionBar.setDisplayShowTitleEnabled(false);
+
+        appBarLayout.setExpanded(true);
     }
 
-    @Override
+    /*@Override
     protected void onRestoreInstanceState(Bundle savedInstanceState)
     {
         super.onRestoreInstanceState(savedInstanceState);
@@ -128,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         }
         else
             toggleEmptyView(true);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -137,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         return super.onCreateOptionsMenu(menu);
     }
 
-    @Override
+    /*@Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         switch (CalendarUtils.sWeekStart)
@@ -317,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             }
         });
         //noinspection ConstantConditions
-        mFabAdd.hide();*/
+        mFabAdd.hide();
     }
 
     private void toggleCalendarView()
@@ -351,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         else
         {
             findViewById(R.id.empty).setVisibility(View.GONE);
-        }*/
+        }
     }
 
     private void changeWeekStart(@IdRes int selection)
@@ -454,196 +397,5 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 requestLocationPermissions();
             }
         }).show();
-    }
-
-    /**
-     * Coordinator utility that synchronizes widgets as selected date changes
-     */
-    static class Coordinator
-    {
-        private static final String STATE_SELECTED_DATE = "state:selectedDate";
-
-        private final EventCalendarView.OnChangeListener mCalendarListener = new EventCalendarView.OnChangeListener()
-        {
-            @Override
-            public void onSelectedDayChange(long calendarDate)
-            {
-                sync(calendarDate, mCalendarView);
-            }
-        };
-        private final AgendaView.OnDateChangeListener mAgendaListener = new AgendaView.OnDateChangeListener()
-        {
-            @Override
-            public void onSelectedDayChange(long dayMillis)
-            {
-                sync(dayMillis, mAgendaView);
-            }
-        };
-        private TextView mTextView;
-        private EventCalendarView mCalendarView;
-        private AgendaView mAgendaView;
-        private long mSelectedDayMillis = CalendarUtils.NO_TIME_MILLIS;
-
-        /**
-         * Set up widgets to be synchronized
-         *
-         * @param textView     title
-         * @param calendarView calendar view
-         * @param agendaView   agenda view
-         */
-        public void coordinate(@NonNull TextView textView, @NonNull EventCalendarView calendarView,
-                @NonNull AgendaView agendaView)
-        {
-            if (mCalendarView != null)
-            {
-                mCalendarView.setOnChangeListener(null);
-            }
-            if (mAgendaView != null)
-            {
-                mAgendaView.setOnDateChangeListener(null);
-            }
-            mTextView = textView;
-            mCalendarView = calendarView;
-            mAgendaView = agendaView;
-            if (mSelectedDayMillis < 0)
-            {
-                mSelectedDayMillis = CalendarUtils.today();
-            }
-            mCalendarView.setSelectedDay(mSelectedDayMillis);
-            agendaView.setSelectedDay(mSelectedDayMillis);
-            updateTitle(mSelectedDayMillis);
-            calendarView.setOnChangeListener(mCalendarListener);
-            agendaView.setOnDateChangeListener(mAgendaListener);
-        }
-
-        void saveState(Bundle outState)
-        {
-            outState.putLong(STATE_SELECTED_DATE, mSelectedDayMillis);
-        }
-
-        void restoreState(Bundle savedState)
-        {
-            mSelectedDayMillis = savedState.getLong(STATE_SELECTED_DATE,
-                    CalendarUtils.NO_TIME_MILLIS);
-        }
-
-        void reset()
-        {
-            mSelectedDayMillis = CalendarUtils.today();
-            if (mCalendarView != null)
-            {
-                mCalendarView.reset();
-            }
-            if (mAgendaView != null)
-            {
-                mAgendaView.reset();
-            }
-            updateTitle(mSelectedDayMillis);
-        }
-
-        private void sync(long dayMillis, View originator)
-        {
-            mSelectedDayMillis = dayMillis;
-            if (originator != mCalendarView)
-            {
-                mCalendarView.setSelectedDay(dayMillis);
-            }
-            if (originator != mAgendaView)
-            {
-                mAgendaView.setSelectedDay(dayMillis);
-            }
-            updateTitle(dayMillis);
-        }
-
-        private void updateTitle(long dayMillis)
-        {
-            mTextView.setText(CalendarUtils.toMonthString(mTextView.getContext(), dayMillis));
-        }
-    }
-
-    static class AgendaCursorAdapter extends AgendaAdapter
-    {
-
-        @VisibleForTesting
-        final DayEventsQueryHandler mHandler;
-
-        public AgendaCursorAdapter(Context context, Collection<String> excludedCalendarIds)
-        {
-            super(context);
-            mHandler = new DayEventsQueryHandler(context.getContentResolver(), this,
-                    excludedCalendarIds);
-        }
-
-        @Override
-        protected void loadEvents(long timeMillis)
-        {
-            mHandler.startQuery(timeMillis, timeMillis, timeMillis + DateUtils.DAY_IN_MILLIS);
-        }
-    }
-
-    static class CalendarCursorAdapter extends EventCalendarView.CalendarAdapter
-    {
-        private final MonthEventsQueryHandler mHandler;
-
-        public CalendarCursorAdapter(Context context, Collection<String> excludedCalendarIds)
-        {
-            mHandler = new MonthEventsQueryHandler(context.getContentResolver(), this,
-                    excludedCalendarIds);
-        }
-
-        @Override
-        protected void loadEvents(long monthMillis)
-        {
-            long startTimeMillis = CalendarUtils.monthFirstDay(
-                    monthMillis), endTimeMillis = startTimeMillis + DateUtils.DAY_IN_MILLIS * CalendarUtils
-                    .monthSize(monthMillis);
-            mHandler.startQuery(monthMillis, startTimeMillis, endTimeMillis);
-        }
-    }
-
-    static class DayEventsQueryHandler extends EventsQueryHandler
-    {
-
-        private final AgendaCursorAdapter mAgendaCursorAdapter;
-
-        public DayEventsQueryHandler(ContentResolver cr, AgendaCursorAdapter agendaCursorAdapter,
-                @NonNull Collection<String> excludedCalendarIds)
-        {
-            super(cr, excludedCalendarIds);
-            mAgendaCursorAdapter = agendaCursorAdapter;
-        }
-
-        @Override
-        protected void handleQueryComplete(int token, Object cookie, EventCursor cursor)
-        {
-            mAgendaCursorAdapter.bindEvents((Long)cookie, cursor);
-        }
-    }
-
-    static class MonthEventsQueryHandler extends EventsQueryHandler
-    {
-
-        private final CalendarCursorAdapter mAdapter;
-
-        public MonthEventsQueryHandler(ContentResolver cr, CalendarCursorAdapter adapter,
-                @NonNull Collection<String> excludedCalendarIds)
-        {
-            super(cr, excludedCalendarIds);
-            mAdapter = adapter;
-        }
-
-        @Override
-        protected void handleQueryComplete(int token, Object cookie, EventCursor cursor)
-        {
-            mAdapter.bindEvents((Long)cookie, cursor);
-        }
-    }
-
-    static class CalendarQueryHandler extends AsyncQueryHandler
-    {
-        public CalendarQueryHandler(ContentResolver cr)
-        {
-            super(cr);
-        }
-    }
+    }*/
 }
