@@ -1,54 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.aelliott.samplegooglecalendarview.MainActivity">
 
-    <include
-        layout="@layout/toolbar_main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+    <!-- Toolbar Layout is included programatically since it can be changed at run-time -->
 
-    <include
-        layout="@layout/include_activity_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:id="@+id/include"/>
+    <include layout="@layout/include_activity_main"/>
 
-    <CheckedTextView
-        android:id="@+id/checkedTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:text="CheckedTextView"
-        app:layout_anchor="@+id/include"
-        android:checkMark="?android:attr/listChoiceIndicatorMultiple"
-        app:layout_anchorGravity="top|left"/>
-
-    <CheckBox
-        android:id="@+id/checkBox"
-        android:background="@color/blue500"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:text="CheckBox"
-        app:layout_anchor="@+id/include"
-        android:button="@null"
-        android:drawableRight="@drawable/ic_expand_more_white_24dp"
-        app:layout_anchorGravity="top|right"/>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|right"
-        android:text="Button"
-        android:drawableRight="@drawable/ic_expand_more_white_24dp"
-        android:background="@color/blue500"
-        app:layout_anchor="@+id/include"
-        app:layout_anchorGravity="center_vertical|left"/>
 </android.support.design.widget.CoordinatorLayout>

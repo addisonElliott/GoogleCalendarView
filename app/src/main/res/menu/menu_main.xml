@@ -1,11 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
         android:id="@+id/action_today"
-        android:title="@string/today"
-        app:showAsAction="ifRoom" />
+        android:title="@string/action_next"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/action_toolbarView"
+        android:title="@string/action_toolbarView">
+
+        <menu>
+            <group
+                android:id="@+id/group_toolbarView"
+                android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/action_toolbarViewOne"
+                    android:title="@string/action_toolbarViewOne"/>
+
+                <item
+                    android:id="@+id/action_toolbarViewTwo"
+                    android:title="@string/action_toolbarViewTwo"/>
+            </group>
+        </menu>
+    </item>
 
     <item
         android:id="@+id/action_week_start"
@@ -19,15 +39,15 @@
 
                 <item
                     android:id="@+id/action_week_start_saturday"
-                    android:title="@string/saturday" />
+                    android:title="@string/saturday"/>
 
                 <item
                     android:id="@+id/action_week_start_sunday"
-                    android:title="@string/sunday" />
+                    android:title="@string/sunday"/>
 
                 <item
                     android:id="@+id/action_week_start_monday"
-                    android:title="@string/monday" />
+                    android:title="@string/monday"/>
 
             </group>
 

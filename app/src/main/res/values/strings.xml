@@ -5,4 +5,9 @@
     <string name="morning">Morning</string>
     <string name="afternoon">Afternoon</string>
     <string name="night">Night</string>
+    <string name="action_next">Next</string>
+
+    <string name="action_toolbarView">Toolbar View</string>
+    <string name="action_toolbarViewOne">One</string>
+    <string name="action_toolbarViewTwo">Two</string>
 </resources>

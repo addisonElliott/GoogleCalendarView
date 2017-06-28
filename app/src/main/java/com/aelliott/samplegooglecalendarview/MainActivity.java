@@ -2,19 +2,47 @@ package com.aelliott.samplegooglecalendarview;
 
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
-import android.widget.CheckedTextView;
+import android.view.MenuItem;
+import android.view.View;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
 {
-    @BindView(R.id.toolbar)
+    private static final String TAG = "MainActivity";
+
+    final static int TOOLBAR_VIEW_ONE = 1;
+
+    static class AppBarLayoutHolder
+    {
+        @BindView(R.id.appBarLayout)
+        AppBarLayout appBarLayout;
+        @BindView(R.id.toolbar)
+        Toolbar toolbar;
+        ActionBar actionBar;
+
+        public AppBarLayoutHolder(View view)
+        {
+            ButterKnife.bind(this, view);
+        }
+    }
+
+    AppBarLayoutHolder appBarLayoutHolder;
+    int toolbarView = TOOLBAR_VIEW_ONE;
+    @BindView(R.id.nestedScrollView)
+    NestedScrollView nestedScrollView;
+
+    /*@BindView(R.id.toolbar)
     Toolbar toolbar;
     ActionBar actionBar;
     @BindView(R.id.collapsingToolbarLayout)
@@ -22,7 +50,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.appBarLayout)
     AppBarLayout appBarLayout;
     @BindView(R.id.checkedTextView_toolbarTitle)
-    CheckedTextView toolbarTitle;
+    CheckedTextView toolbarTitle;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -33,14 +61,50 @@ public class MainActivity extends AppCompatActivity
         // Initialize all variables annotated with @BindView and other variants
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
-        actionBar = getSupportActionBar();
+        // Sets up toolbar
+        setToolbarView(toolbarView);
+    }
 
-        // Temporary
-        toolbarTitle.setText("March 2016");
-        actionBar.setDisplayShowTitleEnabled(false);
+    public void setToolbarView(int toolbarView)
+    {
+        this.toolbarView = toolbarView;
 
-        appBarLayout.setExpanded(true);
+        //ViewGroup parent = (ViewGroup)findViewById(android.R.id.content);
+        CoordinatorLayout parent = (CoordinatorLayout)nestedScrollView.getParent();
+
+        View view = null;
+        switch (toolbarView)
+        {
+            case 1:
+                view = getLayoutInflater().inflate(R.layout.toolbar_main, parent, false);
+
+            default:
+                Log.w(TAG, "Invalid toolbar view number given");
+                break;
+        }
+
+        if (view != null)
+        {
+            parent.addView(view, -1);
+
+            appBarLayoutHolder = new AppBarLayoutHolder(view);
+
+            setSupportActionBar(appBarLayoutHolder.toolbar);
+            appBarLayoutHolder.actionBar = getSupportActionBar();
+
+            parent.invalidate();
+            parent.requestLayout();
+            //nestedScrollView.requestLayout();
+            //nestedScrollView.invalidate();
+            //parent.prepareChildren();
+
+            Log.w("CTL", "Child count is: " + parent.getChildCount());
+            View v = parent.getChildAt(0);
+            Log.w("CTL", "Child 0 name is: " + v.getClass().getName());
+
+            List<View> listChildren = parent.getDependents(nestedScrollView);
+            Log.w("CTL", "Number of dependents is: " + listChildren.size());
+        }
     }
 
     /*@Override
@@ -80,10 +144,17 @@ public class MainActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
-    /*@Override
+    @Override
     public boolean onPrepareOptionsMenu(Menu menu)
     {
-        switch (CalendarUtils.sWeekStart)
+        switch (toolbarView)
+        {
+            case TOOLBAR_VIEW_ONE:
+                menu.findItem(R.id.action_toolbarViewOne).setChecked(true);
+                break;
+        }
+
+        /*switch (CalendarUtils.sWeekStart)
         {
             case Calendar.SATURDAY:
                 menu.findItem(R.id.action_week_start_saturday).setChecked(true);
@@ -94,14 +165,24 @@ public class MainActivity extends AppCompatActivity
             case Calendar.MONDAY:
                 menu.findItem(R.id.action_week_start_monday).setChecked(true);
                 break;
-        }
+        }*/
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (item.getItemId() == R.id.action_today)
+        if (item.getItemId() == R.id.action_toolbarViewOne)
+        {
+            if (!item.isChecked())
+            {
+                //item.setChecked(true);
+                //changeWeekStart(item.getItemId());
+            }
+            return true;
+        }
+
+        /*if (item.getItemId() == R.id.action_today)
         {
             mCoordinator.reset();
             return true;
@@ -115,10 +196,11 @@ public class MainActivity extends AppCompatActivity
             }
             return true;
         }
-        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);*/
+        return super.onOptionsItemSelected(item);
     }
 
-    @Override
+    /*@Override
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
