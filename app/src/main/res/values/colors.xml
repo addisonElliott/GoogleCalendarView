@@ -6,6 +6,8 @@
 
     <color name="colorDivider">#1F000000</color>
 
+    <color name="white">#FFFFFF</color>
+
     <color name="blue50">#E3F2FD</color>
     <color name="cyan50">#E0F7FA</color>
     <color name="green50">#E8F5E9</color>

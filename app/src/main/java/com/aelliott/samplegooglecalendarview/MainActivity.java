@@ -1,7 +1,6 @@
 package com.aelliott.samplegooglecalendarview;
 
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -12,16 +11,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.util.List;
+import com.aelliott.googlecalendarview.appbar.AppBarLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity
 {
     private static final String TAG = "MainActivity";
 
-    final static int TOOLBAR_VIEW_ONE = 1;
+    final static int TOOLBAR_ONE = 1;
+    final static int TOOLBAR_TWO = 2;
 
     static class AppBarLayoutHolder
     {
@@ -35,22 +36,22 @@ public class MainActivity extends AppCompatActivity
         {
             ButterKnife.bind(this, view);
         }
+
+        @OnClick(R.id.relativeLayout_datePickerButton)
+        public void datePickerButton_onClick(View v)
+        {
+            int state = appBarLayout.getState();
+            if (state != AppBarLayout.STATE_TRANSITIONING)
+                appBarLayout.setExpanded((state == AppBarLayout.STATE_COLLAPSED), true);
+        }
     }
 
-    AppBarLayoutHolder appBarLayoutHolder;
-    int toolbarView = TOOLBAR_VIEW_ONE;
+    @BindView(R.id.coordinatorLayout)
+    CoordinatorLayout coordinatorLayout;
+    AppBarLayoutHolder appBarLayoutHolder = null;
+    int toolbarView = TOOLBAR_ONE;
     @BindView(R.id.nestedScrollView)
     NestedScrollView nestedScrollView;
-
-    /*@BindView(R.id.toolbar)
-    Toolbar toolbar;
-    ActionBar actionBar;
-    @BindView(R.id.collapsingToolbarLayout)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.appBarLayout)
-    AppBarLayout appBarLayout;
-    @BindView(R.id.checkedTextView_toolbarTitle)
-    CheckedTextView toolbarTitle;*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -69,14 +70,16 @@ public class MainActivity extends AppCompatActivity
     {
         this.toolbarView = toolbarView;
 
-        //ViewGroup parent = (ViewGroup)findViewById(android.R.id.content);
-        CoordinatorLayout parent = (CoordinatorLayout)nestedScrollView.getParent();
-
         View view = null;
         switch (toolbarView)
         {
-            case 1:
-                view = getLayoutInflater().inflate(R.layout.toolbar_main, parent, false);
+            case TOOLBAR_ONE:
+                view = getLayoutInflater().inflate(R.layout.toolbar_one, coordinatorLayout, false);
+                break;
+
+            case TOOLBAR_TWO:
+                view = getLayoutInflater().inflate(R.layout.toolbar_two, coordinatorLayout, false);
+                break;
 
             default:
                 Log.w(TAG, "Invalid toolbar view number given");
@@ -85,25 +88,14 @@ public class MainActivity extends AppCompatActivity
 
         if (view != null)
         {
-            parent.addView(view, -1);
+            if (appBarLayoutHolder != null)
+                coordinatorLayout.removeView(appBarLayoutHolder.appBarLayout);
+            coordinatorLayout.addView(view, 0);
 
             appBarLayoutHolder = new AppBarLayoutHolder(view);
 
             setSupportActionBar(appBarLayoutHolder.toolbar);
             appBarLayoutHolder.actionBar = getSupportActionBar();
-
-            parent.invalidate();
-            parent.requestLayout();
-            //nestedScrollView.requestLayout();
-            //nestedScrollView.invalidate();
-            //parent.prepareChildren();
-
-            Log.w("CTL", "Child count is: " + parent.getChildCount());
-            View v = parent.getChildAt(0);
-            Log.w("CTL", "Child 0 name is: " + v.getClass().getName());
-
-            List<View> listChildren = parent.getDependents(nestedScrollView);
-            Log.w("CTL", "Number of dependents is: " + listChildren.size());
         }
     }
 
@@ -149,8 +141,12 @@ public class MainActivity extends AppCompatActivity
     {
         switch (toolbarView)
         {
-            case TOOLBAR_VIEW_ONE:
+            case TOOLBAR_ONE:
                 menu.findItem(R.id.action_toolbarViewOne).setChecked(true);
+                break;
+
+            case TOOLBAR_TWO:
+                menu.findItem(R.id.action_toolbarViewTwo).setChecked(true);
                 break;
         }
 
@@ -172,14 +168,26 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (item.getItemId() == R.id.action_toolbarViewOne)
+        switch (item.getItemId())
         {
-            if (!item.isChecked())
-            {
-                //item.setChecked(true);
-                //changeWeekStart(item.getItemId());
-            }
-            return true;
+            case R.id.action_toolbarViewOne:
+                if (!item.isChecked())
+                {
+                    supportInvalidateOptionsMenu();
+                    setToolbarView(TOOLBAR_ONE);
+                }
+                return true;
+
+            case R.id.action_toolbarViewTwo:
+                if (!item.isChecked())
+                {
+                    supportInvalidateOptionsMenu();
+                    setToolbarView(TOOLBAR_TWO);
+                }
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
         /*if (item.getItemId() == R.id.action_today)
@@ -197,7 +205,6 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);*/
-        return super.onOptionsItemSelected(item);
     }
 
     /*@Override

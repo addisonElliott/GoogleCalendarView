@@ -2,6 +2,7 @@ package com.aelliott.googlecalendarview.appbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -10,15 +11,31 @@ import android.view.View;
 
 import com.aelliott.googlecalendarview.R;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 public class CalendarScrollingBehavior extends AppBarLayout.Behavior
 {
-    // Constants for attributes
-    private static final int DRAG_TYPE_NORMAL = 0;
-    private static final int DRAG_TYPE_DENY_ALL = 1;
-    private static final int DRAG_TYPE_ALLOW_ALL = 2;
+    /**
+     * @hide
+     */
+    @IntDef({DRAG_TYPE_NORMAL, DRAG_TYPE_DENY_ALL, DRAG_TYPE_ALLOW_ALL})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DragType {}
 
-    private static final int SCROLL_TOP_ACTION_NONE = 0;
-    private static final int SCROLL_TOP_ACTION_OPEN = 1;
+    public static final int DRAG_TYPE_NORMAL = 0;
+    public static final int DRAG_TYPE_DENY_ALL = 1;
+    public static final int DRAG_TYPE_ALLOW_ALL = 2;
+
+    /**
+     * @hide
+     */
+    @IntDef({SCROLL_TOP_ACTION_NONE, SCROLL_TOP_ACTION_OPEN})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface ScrollTopAction {}
+
+    public static final int SCROLL_TOP_ACTION_NONE = 0;
+    public static final int SCROLL_TOP_ACTION_OPEN = 1;
 
     // Variable for the current value
     private int dragType = DRAG_TYPE_NORMAL;
@@ -32,12 +49,14 @@ public class CalendarScrollingBehavior extends AppBarLayout.Behavior
 
         try
         {
-            setDragType(a.getInteger(R.styleable.CalendarScrollingBehavior_behavior_dragType,
-                    DRAG_TYPE_NORMAL));
+            @DragType int dragType = a.getInt(
+                    R.styleable.CalendarScrollingBehavior_behavior_dragType, DRAG_TYPE_NORMAL);
+            setDragType(dragType);
 
-            setScrollTopAction(
-                    a.getInteger(R.styleable.CalendarScrollingBehavior_behavior_scrollTopAction,
-                            SCROLL_TOP_ACTION_OPEN));
+            @ScrollTopAction int scrollTopAction = a.getInt(
+                    R.styleable.CalendarScrollingBehavior_behavior_scrollTopAction,
+                    SCROLL_TOP_ACTION_OPEN);
+            setScrollTopAction(scrollTopAction);
         }
         finally
         {
@@ -45,12 +64,13 @@ public class CalendarScrollingBehavior extends AppBarLayout.Behavior
         }
     }
 
+    @DragType
     public int getDragType()
     {
         return dragType;
     }
 
-    public void setDragType(int dragType)
+    public void setDragType(@DragType int dragType)
     {
         this.dragType = dragType;
 
@@ -71,12 +91,13 @@ public class CalendarScrollingBehavior extends AppBarLayout.Behavior
             setDragCallback(null);
     }
 
+    @ScrollTopAction
     public int getScrollTopAction()
     {
         return scrollTopAction;
     }
 
-    public void setScrollTopAction(int scrollTopAction)
+    public void setScrollTopAction(@ScrollTopAction int scrollTopAction)
     {
         this.scrollTopAction = scrollTopAction;
     }

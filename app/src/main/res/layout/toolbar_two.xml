@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.aelliott.googlecalendarview.appbar.AppBarLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appBarLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:behavior_dragType="allowAll"
+    app:behavior_scrollTopAction="open"
+    app:expanded="false"
+    app:layout_behavior="com.aelliott.googlecalendarview.appbar.CalendarScrollingBehavior">
+
+    <android.support.design.widget.CollapsingToolbarLayout
+        android:id="@+id/collapsingToolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:minHeight="?attr/actionBarSize"
+        app:contentScrim="?attr/colorPrimary"
+        app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+        app:statusBarScrim="?attr/colorPrimaryDark">
+
+        <LinearLayout
+            android:id="@+id/linearLayout_calendarView"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:paddingTop="?attr/actionBarSize"
+            app:layout_collapseMode="parallax"
+            app:layout_collapseParallaxMultiplier="1.0">
+
+            <!--                <com.github.sundeepk.compactcalendarview.CompactCalendarView
+                                android:id="@+id/compactcalendar_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                app:compactCalendarBackgroundColor="?attr/colorPrimary"
+                                app:compactCalendarCurrentDayBackgroundColor="#FFC107"
+                                app:compactCalendarCurrentSelectedDayBackgroundColor="#BBDEFB"
+                                app:compactCalendarTextColor="#fff"
+                                app:compactCalendarTextSize="12sp"/>-->
+
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image_pretty"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <RelativeLayout
+                android:id="@+id/relativeLayout_datePickerButton"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView_datePicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:maxLines="1"
+                    android:text="June 2016"
+                    android:textAppearance="@style/AppTheme.Toolbar.Title"/>
+
+                <ImageView
+                    android:id="@+id/imageView_datePickerArrow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/textView_datePicker"
+                    android:layout_toRightOf="@+id/textView_datePicker"
+                    app:srcCompat="@drawable/ic_arrow_drop_down_white_24dp"
+                    tools:ignore="ContentDescription,RtlHardcoded"/>
+
+            </RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.CollapsingToolbarLayout>
+
+</com.aelliott.googlecalendarview.appbar.AppBarLayout>
+

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.AppBarLayout
+<com.aelliott.googlecalendarview.appbar.AppBarLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -24,7 +24,7 @@
         app:statusBarScrim="?attr/colorPrimaryDark">
 
         <LinearLayout
-            android:id="@+id/compactcalendar_view_container"
+            android:id="@+id/linearLayout_calendarView"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:paddingTop="?attr/actionBarSize"
@@ -59,7 +59,7 @@
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <RelativeLayout
-                android:id="@+id/date_picker_button"
+                android:id="@+id/relativeLayout_datePickerButton"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?android:selectableItemBackground"
@@ -67,39 +67,36 @@
                 android:orientation="vertical">
 
                 <View
-                    android:id="@+id/centerInParent"
+                    android:id="@+id/view_centerInParent"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_centerVertical="true"/>
 
                 <TextView
-                    android:id="@+id/title"
+                    android:id="@+id/textView_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@id/centerInParent"
+                    android:layout_above="@+id/view_centerInParent"
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text="Section 1"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:textColor="@android:color/white"/>
+                    android:textAppearance="@style/AppTheme.Toolbar.Title"/>
 
                 <TextView
-                    android:id="@+id/date_picker_text_view"
+                    android:id="@+id/textView_datePicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/centerInParent"
-                    android:ellipsize="end"
+                    android:layout_below="@+id/view_centerInParent"
                     android:maxLines="1"
                     android:text="June 2016"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Subtitle"
-                    android:textColor="@android:color/white"/>
+                    android:textAppearance="@style/AppTheme.Toolbar.Subtitle"/>
 
                 <ImageView
-                    android:id="@+id/date_picker_arrow"
+                    android:id="@+id/imageView_datePickerArrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/date_picker_text_view"
-                    android:layout_toRightOf="@id/date_picker_text_view"
+                    android:layout_alignBottom="@+id/textView_datePicker"
+                    android:layout_toRightOf="@+id/textView_datePicker"
                     app:srcCompat="@drawable/ic_arrow_drop_down_white_24dp"
                     tools:ignore="ContentDescription,RtlHardcoded"/>
 
@@ -108,5 +105,5 @@
 
     </android.support.design.widget.CollapsingToolbarLayout>
 
-</android.support.design.widget.AppBarLayout>
+</com.aelliott.googlecalendarview.appbar.AppBarLayout>
 
