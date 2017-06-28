@@ -41,8 +41,20 @@ public class MainActivity extends AppCompatActivity
         public void datePickerButton_onClick(View v)
         {
             int state = appBarLayout.getState();
-            if (state != AppBarLayout.STATE_TRANSITIONING)
-                appBarLayout.setExpanded((state == AppBarLayout.STATE_COLLAPSED), true);
+            switch (state)
+            {
+                case AppBarLayout.STATE_EXPANDED:
+                    appBarLayout.setExpanded(false, true);
+                    break;
+
+                case AppBarLayout.STATE_COLLAPSED:
+                    appBarLayout.setExpanded(true, true);
+                    break;
+
+                default:
+                    // If transitioning to a new state, do nothing
+                    return;
+            }
         }
     }
 

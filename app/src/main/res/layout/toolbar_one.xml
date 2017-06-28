@@ -11,7 +11,8 @@
     app:behavior_dragType="allowAll"
     app:behavior_scrollTopAction="open"
     app:expanded="false"
-    app:layout_behavior="com.aelliott.googlecalendarview.appbar.CalendarScrollingBehavior">
+    app:layout_behavior="com.aelliott.googlecalendarview.appbar.CalendarScrollingBehavior"
+    app:rotateViewId="@+id/imageView_datePickerArrow">
 
     <android.support.design.widget.CollapsingToolbarLayout
         android:id="@+id/collapsingToolbarLayout"

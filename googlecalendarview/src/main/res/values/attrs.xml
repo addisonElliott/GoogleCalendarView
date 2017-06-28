@@ -12,4 +12,8 @@
             <enum name="open" value="1"/>
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="AppBarLayout">
+        <attr name="rotateViewId" format="reference"/>
+    </declare-styleable>
 </resources>
