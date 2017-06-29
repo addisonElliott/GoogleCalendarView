@@ -10,7 +10,7 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:behavior_dragType="allowAll"
     app:behavior_scrollTopAction="open"
-    app:expanded="false"
+    app:expanded="true"
     app:layout_behavior="com.aelliott.googlecalendarview.appbar.CalendarScrollingBehavior"
     app:rotateViewId="@+id/imageView_datePickerArrow">
 
