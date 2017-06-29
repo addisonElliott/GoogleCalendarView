@@ -5,6 +5,8 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.threeten.bp.LocalDate;
+
 public class MonthViewPagerAdapter extends PagerAdapter
 {
     /**
@@ -27,6 +29,7 @@ public class MonthViewPagerAdapter extends PagerAdapter
     {
         // Create new MonthView object
         MonthView view = new MonthView(context);
+        view.setDisplayMonthDate(LocalDate.parse("2017-03-03"));
 
         // Add the view to the container, which is the ViewPager in this case
         container.addView(view);

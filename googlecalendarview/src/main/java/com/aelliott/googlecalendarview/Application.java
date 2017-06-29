@@ -2,7 +2,7 @@ package com.aelliott.googlecalendarview;
 
 import android.util.Log;
 
-import net.danlew.android.joda.JodaTimeAndroid;
+import com.jakewharton.threetenabp.AndroidThreeTen;
 
 public class Application extends android.app.Application
 {
@@ -14,9 +14,9 @@ public class Application extends android.app.Application
         super.onCreate();
 
         // It's important to initialize the ResourceZoneInfoProvider; otherwise
-        // joda-time-android will not work.
-        JodaTimeAndroid.init(this);
+        // AndroidThreeTen will not work.
+        AndroidThreeTen.init(this);
 
-        Log.v(TAG, "Initialized Joda Time");
+        Log.v(TAG, "Initialized ThreeTenABP");
     }
 }
