@@ -7,6 +7,7 @@
     <com.aelliott.googlecalendarview.calendar.CalendarView
         android:id="@+id/calendarView"
         android:layout_height="match_parent"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent">
+    </com.aelliott.googlecalendarview.calendar.CalendarView>
 
 </android.support.design.widget.CoordinatorLayout>

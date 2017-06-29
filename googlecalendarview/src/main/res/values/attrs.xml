@@ -16,4 +16,32 @@
     <declare-styleable name="AppBarLayout">
         <attr name="rotateViewId" format="reference"/>
     </declare-styleable>
+
+    <declare-styleable name="CalendarView">
+        <attr name="startDayOfWeek" format="enum">
+            <!-- Full Weekday Names -->
+            <enum name="monday" value="1"/>
+            <enum name="tuesday" value="2"/>
+            <enum name="wednesday" value="3"/>
+            <enum name="thursday" value="4"/>
+            <enum name="friday" value="5"/>
+            <enum name="saturday" value="6"/>
+            <enum name="sunday" value="7"/>
+
+            <!-- Short Weekday Names -->
+            <enum name="mon" value="1"/>
+            <enum name="tue" value="2"/>
+            <enum name="wed" value="3"/>
+            <enum name="thu" value="4"/>
+            <enum name="fri" value="5"/>
+            <enum name="sat" value="6"/>
+            <enum name="sun" value="7"/>
+        </attr>
+
+        <attr name="dayOfWeekDisplay" format="enum">
+            <enum name="narrow" value="0"/>
+            <enum name="brief" value="1"/>
+            <enum name="full" value="2"/>
+        </attr>
+    </declare-styleable>
 </resources>

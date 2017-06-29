@@ -2,6 +2,7 @@ package com.aelliott.googlecalendarview.appbar;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.IdRes;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.View;
@@ -27,6 +28,7 @@ public class AppBarLayout extends android.support.design.widget.AppBarLayout
 
     private int state;
     private View rotateView = null;
+    @IdRes
     private int rotateViewResourceId = 0;
     private OnOffsetChangedListener onOffsetChangedListener;
 

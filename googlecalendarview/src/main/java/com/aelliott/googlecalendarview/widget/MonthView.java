@@ -16,17 +16,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
 import com.aelliott.googlecalendarview.CalendarUtils;
 import com.aelliott.googlecalendarview.R;
 import com.aelliott.googlecalendarview.content.EventCursor;
 import com.aelliott.googlecalendarview.text.style.CircleSpan;
 import com.aelliott.googlecalendarview.text.style.UnderDotSpan;
+
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Custom widget to display a grid of days in a month, represented by a {@link Calendar}
@@ -184,11 +184,11 @@ class MonthView extends RecyclerView
             {
                 case VIEW_TYPE_HEADER:
                     return new HeaderViewHolder(
-                            inflater.inflate(R.layout.grid_item_header, parent, false));
+                            inflater.inflate(R.layout.month_view_item_header, parent, false));
                 case VIEW_TYPE_CONTENT:
                 default:
                     return new ContentViewHolder(
-                            inflater.inflate(R.layout.grid_item_content, parent, false));
+                            inflater.inflate(R.layout.month_view_item_cell, parent, false));
             }
         }
 
