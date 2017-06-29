@@ -1,13 +1,20 @@
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
     <com.aelliott.googlecalendarview.calendar.CalendarView
         android:id="@+id/calendarView"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     </com.aelliott.googlecalendarview.calendar.CalendarView>
 
-</android.support.design.widget.CoordinatorLayout>
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Testing"/>
+
+</LinearLayout>

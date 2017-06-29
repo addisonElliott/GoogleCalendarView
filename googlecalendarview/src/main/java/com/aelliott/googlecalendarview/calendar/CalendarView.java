@@ -6,23 +6,18 @@ import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.view.View;
 
 import com.aelliott.googlecalendarview.R;
 
+import org.threeten.bp.DayOfWeek;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Calendar;
 import java.util.Locale;
 
 public class CalendarView extends ViewPager
 {
-    /**
-     * @hide
-     */
-    @IntDef({Calendar.MONDAY, Calendar.TUESDAY, Calendar.WEDNESDAY, Calendar.THURSDAY, Calendar.FRIDAY, Calendar.SATURDAY, Calendar.SUNDAY})
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface StartDayOfWeek {}
-
     /**
      * @hide
      */
@@ -36,8 +31,7 @@ public class CalendarView extends ViewPager
 
     private MonthViewPagerAdapter pagerAdapter;
     private Locale locale = Locale.US;
-    @StartDayOfWeek
-    private int startDayOfWeek = Calendar.MONDAY;
+    private DayOfWeek startDayOfWeek = DayOfWeek.SUNDAY;
     @DayOfWeekDisplay
     private int dayOfWeekDisplay = DAY_WEEK_DISPLAY_NARROW;
     @LayoutRes
@@ -60,7 +54,6 @@ public class CalendarView extends ViewPager
         {
             a.getInteger(R.styleable.CalendarView_startDayOfWeek, 1);
             a.getInteger(R.styleable.CalendarView_dayOfWeekDisplay, 0);
-            //rotateViewResourceId = a.getResourceId(R.styleable.AppBarLayout_rotateViewId, 0);
         }
         finally
         {
@@ -68,6 +61,25 @@ public class CalendarView extends ViewPager
         }
 
         setupDefaultAdapter();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        int height = 0;
+        for (int i = 0; i < getChildCount(); i++)
+        {
+            View child = getChildAt(i);
+            child.measure(widthMeasureSpec,
+                    MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            int h = child.getMeasuredHeight();
+            if (h > height)
+                height = h;
+        }
+
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     public void setupDefaultAdapter()
@@ -97,13 +109,12 @@ public class CalendarView extends ViewPager
         }
     }
 
-    @StartDayOfWeek
-    public int getStartDayOfWeek()
+    public DayOfWeek getStartDayOfWeek()
     {
         return startDayOfWeek;
     }
 
-    public void setStartDayOfWeek(@StartDayOfWeek int startDayOfWeek)
+    public void setStartDayOfWeek(DayOfWeek startDayOfWeek)
     {
         this.startDayOfWeek = startDayOfWeek;
 

@@ -17,9 +17,10 @@ import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.TextStyle;
 
-import java.util.Calendar;
 import java.util.Locale;
 
+import static com.aelliott.googlecalendarview.calendar.CalendarView.DAY_WEEK_DISPLAY_BRIEF;
+import static com.aelliott.googlecalendarview.calendar.CalendarView.DAY_WEEK_DISPLAY_FULL;
 import static com.aelliott.googlecalendarview.calendar.CalendarView.DAY_WEEK_DISPLAY_NARROW;
 
 public class MonthView extends RecyclerView
@@ -35,13 +36,10 @@ public class MonthView extends RecyclerView
     private static final int GRID_COLUMN_COUNT = 7;
 
     private LocalDate displayMonthDate;
-    private String[] weekdays;
     private Locale locale = Locale.US;
-    @CalendarView.StartDayOfWeek
-    private int startDayOfWeek = Calendar.MONDAY;
-    private
+    private DayOfWeek startDayOfWeek = DayOfWeek.SUNDAY;
     @CalendarView.DayOfWeekDisplay
-    int dayOfWeekDisplay = DAY_WEEK_DISPLAY_NARROW;
+    private int dayOfWeekDisplay = DAY_WEEK_DISPLAY_NARROW;
     @LayoutRes
     private int headerLayout = 0;
     @LayoutRes
@@ -62,16 +60,6 @@ public class MonthView extends RecyclerView
         super(context, attrs, defStyle);
 
         setLayoutManager(new GridLayoutManager(context, GRID_COLUMN_COUNT));
-
-        DayOfWeek currentDay = DayOfWeek.of(7); // Start day
-        weekdays = new String[GRID_COLUMN_COUNT];
-        for (int i = 0; i < GRID_COLUMN_COUNT; ++i)
-        {
-            weekdays[i] = currentDay.getDisplayName(TextStyle.NARROW, Locale.ENGLISH);
-
-            // Go to the next day
-            currentDay = currentDay.plus(1);
-        }
     }
 
     public LocalDate getDisplayMonthDate()
@@ -125,7 +113,9 @@ public class MonthView extends RecyclerView
             if (holder instanceof HeaderViewHolder)
             {
                 HeaderViewHolder viewHolder = (HeaderViewHolder)holder;
-                viewHolder.textView.setText(weekdays[position]);
+
+                viewHolder.textView.setText(
+                        startDayOfWeek.plus(position).getDisplayName(getTextStyle(), locale));
             }
             else
             {
@@ -189,17 +179,26 @@ public class MonthView extends RecyclerView
     public void setLocale(Locale locale)
     {
         this.locale = locale;
+
+        // If there is a adapter, then notify that changes were made to the data set
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
-    @CalendarView.StartDayOfWeek
-    public int getStartDayOfWeek()
+    public DayOfWeek getStartDayOfWeek()
     {
         return startDayOfWeek;
     }
 
-    public void setStartDayOfWeek(@CalendarView.StartDayOfWeek int startDayOfWeek)
+    public void setStartDayOfWeek(DayOfWeek startDayOfWeek)
     {
         this.startDayOfWeek = startDayOfWeek;
+
+        // If there is a adapter, then notify that changes were made to the data set
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     @CalendarView.DayOfWeekDisplay
@@ -211,6 +210,11 @@ public class MonthView extends RecyclerView
     public void setDayOfWeekDisplay(@CalendarView.DayOfWeekDisplay int dayOfWeekDisplay)
     {
         this.dayOfWeekDisplay = dayOfWeekDisplay;
+
+        // If there is a adapter, then notify that changes were made to the data set
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     @LayoutRes
@@ -233,5 +237,20 @@ public class MonthView extends RecyclerView
     public void setCellLayout(@LayoutRes int cellLayout)
     {
         this.cellLayout = cellLayout;
+    }
+
+    private TextStyle getTextStyle()
+    {
+        switch (dayOfWeekDisplay)
+        {
+            case DAY_WEEK_DISPLAY_NARROW:
+                return TextStyle.NARROW;
+            case DAY_WEEK_DISPLAY_BRIEF:
+                return TextStyle.SHORT;
+            case DAY_WEEK_DISPLAY_FULL:
+                return TextStyle.FULL;
+            default:
+                return null;
+        }
     }
 }
