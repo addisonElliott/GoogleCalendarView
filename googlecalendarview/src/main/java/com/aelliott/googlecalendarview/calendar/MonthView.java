@@ -38,7 +38,7 @@ public class MonthView extends RecyclerView
      */
     private static final int GRID_COLUMN_COUNT = 7;
 
-    private LocalDate displayMonthDate;
+    private LocalDate displayMonthDate = null;
     private Locale locale = Locale.US;
     private DayOfWeek startDayOfWeek = DayOfWeek.SUNDAY;
     @CalendarView.DayOfWeekDisplay
@@ -63,6 +63,9 @@ public class MonthView extends RecyclerView
         super(context, attrs, defStyle);
 
         setLayoutManager(new GridLayoutManager(context, GRID_COLUMN_COUNT));
+
+        Adapter adapter = new Adapter(context);
+        setAdapter(adapter);
     }
 
     public LocalDate getDisplayMonthDate()
@@ -74,25 +77,123 @@ public class MonthView extends RecyclerView
     {
         this.displayMonthDate = displayMonthDate;
 
-        Adapter adapter = new Adapter(getContext(), displayMonthDate);
-        setAdapter(adapter);
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+        {
+            adapter.update();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public Locale getLocale()
+    {
+        return locale;
+    }
+
+    public void setLocale(Locale locale)
+    {
+        this.locale = locale;
+
+        // If there is a adapter, then notify that changes were made to the data set
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+        {
+            adapter.update();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public DayOfWeek getStartDayOfWeek()
+    {
+        return startDayOfWeek;
+    }
+
+    public void setStartDayOfWeek(DayOfWeek startDayOfWeek)
+    {
+        this.startDayOfWeek = startDayOfWeek;
+
+        // If there is a adapter, then notify that changes were made to the data set
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+        {
+            adapter.update();
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @CalendarView.DayOfWeekDisplay
+    public int getDayOfWeekDisplay()
+    {
+        return dayOfWeekDisplay;
+    }
+
+    public void setDayOfWeekDisplay(@CalendarView.DayOfWeekDisplay int dayOfWeekDisplay)
+    {
+        this.dayOfWeekDisplay = dayOfWeekDisplay;
+
+        // If there is a adapter, then notify that changes were made to the data set
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
+    }
+
+    @LayoutRes
+    public int getHeaderLayout()
+    {
+        return headerLayout;
+    }
+
+    public void setHeaderLayout(@LayoutRes int headerLayout)
+    {
+        this.headerLayout = headerLayout;
+    }
+
+    @LayoutRes
+    public int getCellLayout()
+    {
+        return cellLayout;
+    }
+
+    public void setCellLayout(@LayoutRes int cellLayout)
+    {
+        this.cellLayout = cellLayout;
+    }
+
+    private TextStyle getTextStyle()
+    {
+        switch (dayOfWeekDisplay)
+        {
+            case DAY_WEEK_DISPLAY_NARROW:
+                return TextStyle.NARROW;
+            case DAY_WEEK_DISPLAY_BRIEF:
+                return TextStyle.SHORT;
+            case DAY_WEEK_DISPLAY_FULL:
+                return TextStyle.FULL;
+            default:
+                return null;
+        }
     }
 
     public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     {
         private Context context;
-        private LocalDate date = null;
 
-        private final int monthFirstDayStartOffset;
-        private final int monthItemCount;
+        private int monthFirstDayStartOffset = 0;
+        private int monthItemCount = 0;
 
-        public Adapter(Context context, LocalDate date)
+        public Adapter(Context context)
         {
             this.context = context;
-            this.date = date;
+        }
+
+        public void update()
+        {
+            // If the displayMonthDate is invalid, then do nothing
+            if (displayMonthDate == null)
+                return;
 
             // Get beginning date of the month
-            LocalDate startOfMonth = date.withDayOfMonth(1);
+            LocalDate startOfMonth = displayMonthDate.withDayOfMonth(1);
             // Get date of the start of the week. Thus, if today is Thursday, June 1 and the start of
             // the week is Sunday, then the startDate is Sunday, May 28th. The OrSame part means that
             // if today is the start of the week, then return the same date
@@ -107,8 +208,9 @@ public class MonthView extends RecyclerView
 
             // Total number of items in adapter is one row for the weekday headers plus the empty cell
             // offset and then the number of days in the month
-            monthItemCount = GRID_COLUMN_COUNT + monthFirstDayStartOffset + date.getMonth().length(
-                    date.isLeapYear());
+            monthItemCount = GRID_COLUMN_COUNT + monthFirstDayStartOffset + displayMonthDate
+                    .getMonth()
+                    .length(displayMonthDate.isLeapYear());
         }
 
         @Override
@@ -201,89 +303,6 @@ public class MonthView extends RecyclerView
             super(view);
 
             textView = (TextView)view;
-        }
-    }
-
-    public Locale getLocale()
-    {
-        return locale;
-    }
-
-    public void setLocale(Locale locale)
-    {
-        this.locale = locale;
-
-        // If there is a adapter, then notify that changes were made to the data set
-        Adapter adapter = (Adapter)getAdapter();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-    }
-
-    public DayOfWeek getStartDayOfWeek()
-    {
-        return startDayOfWeek;
-    }
-
-    public void setStartDayOfWeek(DayOfWeek startDayOfWeek)
-    {
-        this.startDayOfWeek = startDayOfWeek;
-
-        // If there is a adapter, then notify that changes were made to the data set
-        Adapter adapter = (Adapter)getAdapter();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-    }
-
-    @CalendarView.DayOfWeekDisplay
-    public int getDayOfWeekDisplay()
-    {
-        return dayOfWeekDisplay;
-    }
-
-    public void setDayOfWeekDisplay(@CalendarView.DayOfWeekDisplay int dayOfWeekDisplay)
-    {
-        this.dayOfWeekDisplay = dayOfWeekDisplay;
-
-        // If there is a adapter, then notify that changes were made to the data set
-        Adapter adapter = (Adapter)getAdapter();
-        if (adapter != null)
-            adapter.notifyDataSetChanged();
-    }
-
-    @LayoutRes
-    public int getHeaderLayout()
-    {
-        return headerLayout;
-    }
-
-    public void setHeaderLayout(@LayoutRes int headerLayout)
-    {
-        this.headerLayout = headerLayout;
-    }
-
-    @LayoutRes
-    public int getCellLayout()
-    {
-        return cellLayout;
-    }
-
-    public void setCellLayout(@LayoutRes int cellLayout)
-    {
-        this.cellLayout = cellLayout;
-    }
-
-    private TextStyle getTextStyle()
-    {
-        switch (dayOfWeekDisplay)
-        {
-            case DAY_WEEK_DISPLAY_NARROW:
-                return TextStyle.NARROW;
-            case DAY_WEEK_DISPLAY_BRIEF:
-                return TextStyle.SHORT;
-            case DAY_WEEK_DISPLAY_FULL:
-                return TextStyle.FULL;
-            default:
-                return null;
         }
     }
 }
