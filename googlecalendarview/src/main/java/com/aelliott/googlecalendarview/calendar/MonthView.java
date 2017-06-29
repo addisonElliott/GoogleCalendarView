@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.aelliott.googlecalendarview.R;
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.format.TextStyle;
+import org.threeten.bp.temporal.ChronoUnit;
+import org.threeten.bp.temporal.TemporalAdjusters;
 
 import java.util.Locale;
 
@@ -80,10 +83,32 @@ public class MonthView extends RecyclerView
         private Context context;
         private LocalDate date = null;
 
+        private final int monthFirstDayStartOffset;
+        private final int monthItemCount;
+
         public Adapter(Context context, LocalDate date)
         {
             this.context = context;
             this.date = date;
+
+            // Get beginning date of the month
+            LocalDate startOfMonth = date.withDayOfMonth(1);
+            // Get date of the start of the week. Thus, if today is Thursday, June 1 and the start of
+            // the week is Sunday, then the startDate is Sunday, May 28th. The OrSame part means that
+            // if today is the start of the week, then return the same date
+            LocalDate startDate = startOfMonth.with(
+                    TemporalAdjusters.previousOrSame(startDayOfWeek));
+            // Get the difference between startOfMonth and startDate to get the number of blank cells
+            // to show in the calendar before putting the first day of the month
+            monthFirstDayStartOffset = (int)ChronoUnit.DAYS.between(startDate, startOfMonth);
+
+            Log.v("CTL", "Start Date: " + startDate + " StartOfMonth: " + startOfMonth);
+            Log.v("CTL", "Day Offset: " + monthFirstDayStartOffset);
+
+            // Total number of items in adapter is one row for the weekday headers plus the empty cell
+            // offset and then the number of days in the month
+            monthItemCount = GRID_COLUMN_COUNT + monthFirstDayStartOffset + date.getMonth().length(
+                    date.isLeapYear());
         }
 
         @Override
@@ -120,7 +145,18 @@ public class MonthView extends RecyclerView
             else
             {
                 CellViewHolder viewHolder = (CellViewHolder)holder;
-                viewHolder.textView.setText(Integer.toString((position + 1 - GRID_COLUMN_COUNT)));
+
+                // Add one to position since it is zero-indexed. We want month days to be 1-30 not 0-29
+                // Remove the header row for displaying weekdays by subtracting the number of columns in a row
+                // Subtract the first day month offset so that the first day of the month aligns with
+                // the correct day of the week
+                int dayNumber = position + 1 - GRID_COLUMN_COUNT - monthFirstDayStartOffset;
+
+                // Only print
+                if (dayNumber <= 0)
+                    viewHolder.textView.setText("");
+                else
+                    viewHolder.textView.setText(String.format(locale, "%d", dayNumber));
             }
         }
 
@@ -130,10 +166,7 @@ public class MonthView extends RecyclerView
             // Number of items in the grid is equal to the number of days in the month plus another
             // row for the header. If no date is present, set the number of items to zero to show a
             // blank screen
-            if (date == null)
-                return 0;
-            else
-                return date.getMonth().length(date.isLeapYear()) + GRID_COLUMN_COUNT;
+            return monthItemCount;
         }
 
         @Override

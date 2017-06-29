@@ -48,7 +48,7 @@ public class MonthViewPagerAdapter extends PagerAdapter
         }
 
         // Set month and year to display on this view
-        view.setDisplayMonthDate(LocalDate.parse("2017-03-03"));
+        view.setDisplayMonthDate(LocalDate.parse("2017-06-29"));
 
         // Synchronize settings in adapter to the new view
         view.setLocale(parent.getLocale());
