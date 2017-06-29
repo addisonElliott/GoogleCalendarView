@@ -9,8 +9,23 @@ import android.view.ViewGroup;
 
 import org.threeten.bp.LocalDate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MonthViewPagerAdapter extends PagerAdapter
 {
+    public interface OnCreateViewListener
+    {
+        /**
+         * Fired when a new MonthView is instantiated
+         * <p>
+         * Useful for adding custom styles and item decorations to the view before adding to the calendar view
+         *
+         * @param view new view that was created
+         */
+        void onCreateView(MonthView view);
+    }
+
     /**
      * Number of items to buffer at one time.
      * <p>
@@ -20,12 +35,31 @@ public class MonthViewPagerAdapter extends PagerAdapter
     private static final int ITEM_COUNT = 5;
 
     private Context context;
+    private final List<LocalDate> months = new ArrayList<>(getCount());
+    private final List<MonthView> views = new ArrayList<>(getCount());
+    private OnCreateViewListener createViewListener;
     @LayoutRes
     private int monthViewLayout = 0;
 
     public MonthViewPagerAdapter(Context context)
     {
+        this(context, null);
+    }
+
+    public MonthViewPagerAdapter(Context context, LocalDate startDate)
+    {
         this.context = context;
+
+        if (startDate == null)
+            startDate = LocalDate.now();
+
+        int mid = ITEM_COUNT / 2;
+        startDate = startDate.withDayOfMonth(1);
+        for (int i = 0; i < ITEM_COUNT; ++i)
+        {
+            months.add(startDate.plusMonths(i - mid));
+            views.add(null);
+        }
     }
 
     @Override
@@ -47,9 +81,6 @@ public class MonthViewPagerAdapter extends PagerAdapter
             view = new MonthView(context);
         }
 
-        // Set month and year to display on this view
-        view.setDisplayMonthDate(LocalDate.parse("2017-06-29"));
-
         // Synchronize settings in adapter to the new view
         view.setLocale(parent.getLocale());
         view.setStartDayOfWeek(parent.getStartDayOfWeek());
@@ -57,8 +88,20 @@ public class MonthViewPagerAdapter extends PagerAdapter
         view.setHeaderLayout(parent.getMonthViewHeaderLayout());
         view.setCellLayout(parent.getMonthViewCellLayout());
 
+        view.setDisplayMonthDate(months.get(position));
+
+        // Notify user that a new view has been created so they can add any styles
+        // or line decorations
+        if (createViewListener != null)
+            createViewListener.onCreateView(view);
+
+        // Set view to its current position
+        // The order of the views added is not the order of the position necessarily
+        views.set(position, view);
+
         // Add the view to the container, which is the ViewPager in this case
         container.addView(view);
+        bind(position);
 
         // Return the view as the Object, which is used to identify the object typically (besides position)
         return view;
@@ -87,9 +130,20 @@ public class MonthViewPagerAdapter extends PagerAdapter
         return (view == object);
     }
 
+    void bind(int position)
+    {
+        if (views.get(position) != null)
+            views.get(position).setDisplayMonthDate(months.get(position));
+    }
+
     public Context getContext()
     {
         return context;
+    }
+
+    public MonthView getView(int position)
+    {
+        return views.get(position);
     }
 
     @LayoutRes
@@ -101,5 +155,15 @@ public class MonthViewPagerAdapter extends PagerAdapter
     public void setMonthViewLayout(@LayoutRes int monthViewLayout)
     {
         this.monthViewLayout = monthViewLayout;
+    }
+
+    /**
+     * Sets listener to be notified upon creation of new MonthView class
+     *
+     * @param listener listener to be notified
+     */
+    public void setOnCreateViewListener(OnCreateViewListener listener)
+    {
+        createViewListener = listener;
     }
 }

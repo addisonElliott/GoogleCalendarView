@@ -8,8 +8,6 @@ import com.aelliott.googlecalendarview.calendar.CalendarView;
 
 import org.threeten.bp.DayOfWeek;
 
-import java.util.Locale;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -28,7 +26,8 @@ public class Testing extends AppCompatActivity
         // Initialize all variables annotated with @BindView and other variants
         ButterKnife.bind(this);
 
-        //calendarView.setMonthViewLayout(R.layout.month_view);
+        calendarView.setMonthViewLayout(R.layout.month_view);
+        calendarView.setMonthViewHeaderLayout(R.layout.month_view_item_header);
     }
 
     @OnClick(R.id.button1)
@@ -37,6 +36,5 @@ public class Testing extends AppCompatActivity
         //calendarView.setMonthViewLayout(R.layout.month_view);
         calendarView.setStartDayOfWeek(DayOfWeek.WEDNESDAY);
         calendarView.setDayOfWeekDisplay(CalendarView.DAY_WEEK_DISPLAY_BRIEF);
-        calendarView.setLocale(Locale.CHINA);
     }
 }

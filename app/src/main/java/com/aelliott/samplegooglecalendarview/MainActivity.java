@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.aelliott.googlecalendarview.appbar.AppBarLayout;
+import com.aelliott.googlecalendarview.calendar.CalendarView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,10 +32,15 @@ public class MainActivity extends AppCompatActivity
         @BindView(R.id.toolbar)
         Toolbar toolbar;
         ActionBar actionBar;
+        @BindView(R.id.calendarView)
+        CalendarView calendarView;
 
         public AppBarLayoutHolder(View view)
         {
             ButterKnife.bind(this, view);
+
+            //calendarView.setMonthViewLayout(R.layout.month_view);
+            //calendarView.setMonthViewHeaderLayout(R.layout.month_view_item_header);
         }
 
         @OnClick(R.id.relativeLayout_datePickerButton)

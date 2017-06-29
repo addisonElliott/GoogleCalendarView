@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -202,9 +201,6 @@ public class MonthView extends RecyclerView
             // Get the difference between startOfMonth and startDate to get the number of blank cells
             // to show in the calendar before putting the first day of the month
             monthFirstDayStartOffset = (int)ChronoUnit.DAYS.between(startDate, startOfMonth);
-
-            Log.v("CTL", "Start Date: " + startDate + " StartOfMonth: " + startOfMonth);
-            Log.v("CTL", "Day Offset: " + monthFirstDayStartOffset);
 
             // Total number of items in adapter is one row for the weekday headers plus the empty cell
             // offset and then the number of days in the month

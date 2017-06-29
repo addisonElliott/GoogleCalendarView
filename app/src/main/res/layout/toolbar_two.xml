@@ -27,29 +27,16 @@
         <LinearLayout
             android:id="@+id/linearLayout_calendarView"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="wrap_content"
             android:paddingTop="?attr/actionBarSize"
             app:layout_collapseMode="parallax"
             app:layout_collapseParallaxMultiplier="1.0">
 
-            <!--                <com.github.sundeepk.compactcalendarview.CompactCalendarView
-                                android:id="@+id/compactcalendar_view"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:paddingLeft="10dp"
-                                android:paddingRight="10dp"
-                                app:compactCalendarBackgroundColor="?attr/colorPrimary"
-                                app:compactCalendarCurrentDayBackgroundColor="#FFC107"
-                                app:compactCalendarCurrentSelectedDayBackgroundColor="#BBDEFB"
-                                app:compactCalendarTextColor="#fff"
-                                app:compactCalendarTextSize="12sp"/>-->
-
-
-            <ImageView
+            <com.aelliott.googlecalendarview.calendar.CalendarView
+                android:id="@+id/calendarView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:src="@drawable/image_pretty"/>
+                android:layout_height="wrap_content">
+            </com.aelliott.googlecalendarview.calendar.CalendarView>
         </LinearLayout>
 
         <android.support.v7.widget.Toolbar

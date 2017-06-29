@@ -29,7 +29,6 @@ public class CalendarView extends ViewPager
     public static final int DAY_WEEK_DISPLAY_BRIEF = 1;
     public static final int DAY_WEEK_DISPLAY_FULL = 2;
 
-    private MonthViewPagerAdapter pagerAdapter;
     private Locale locale = Locale.US;
     private DayOfWeek startDayOfWeek = DayOfWeek.SUNDAY;
     @DayOfWeekDisplay
@@ -66,18 +65,18 @@ public class CalendarView extends ViewPager
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
     {
-        int height = 0;
-        for (int i = 0; i < getChildCount(); i++)
+        MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)getAdapter();
+
+        View child = adapter.getView(getCurrentItem());
+        if (child != null)
         {
-            View child = getChildAt(i);
             child.measure(widthMeasureSpec,
                     MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-            int h = child.getMeasuredHeight();
-            if (h > height)
-                height = h;
-        }
+            int height = child.getMeasuredHeight();
+            setMeasuredDimension(getMeasuredWidth(), height);
 
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        }
 
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
@@ -85,11 +84,36 @@ public class CalendarView extends ViewPager
     public void setupDefaultAdapter()
     {
         // Create new pager adapter and set it as the current adapter for the ViewPager
-        pagerAdapter = new MonthViewPagerAdapter(getContext());
-        setAdapter(pagerAdapter);
+        MonthViewPagerAdapter adapter = new MonthViewPagerAdapter(getContext());
+        setAdapter(adapter);
 
         // Set current item to be in the middle of the circular pager adapter
-        setCurrentItem(pagerAdapter.getCount() / 2);
+        setCurrentItem(adapter.getCount() / 2);
+
+        addOnPageChangeListener(new OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+            {
+
+            }
+
+            @Override
+            public void onPageSelected(int position)
+            {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state)
+            {
+                // If page state changed to idle, then it just finished switching pages
+                if (state == SCROLL_STATE_IDLE)
+                {
+
+                }
+            }
+        });
     }
 
     public Locale getLocale()
