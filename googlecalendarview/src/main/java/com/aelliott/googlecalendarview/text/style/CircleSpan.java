@@ -1,41 +1,62 @@
 package com.aelliott.googlecalendarview.text.style;
 
-import android.content.Context;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.text.style.ReplacementSpan;
-
-import com.aelliott.googlecalendarview.R;
 
 /**
  * Text span that draws a circle around text, pads to cover at least 2 characters
  */
 public class CircleSpan extends ReplacementSpan
 {
+    /**
+     * Default padding used
+     */
+    public static final float DEFAULT_PADDING = 8;
 
-    private final float mPadding;
-    private final int mCircleColor;
-    private final int mTextColor;
+    /**
+     * Default color used for text color and circle color
+     */
+    public static final int DEFAULT_COLOR = 0;
 
-    public CircleSpan(Context context)
+    private final float padding;
+    private final int circleColor;
+    private final int textColor;
+
+    public CircleSpan()
+    {
+        this(DEFAULT_PADDING, DEFAULT_COLOR, DEFAULT_COLOR);
+    }
+
+    public CircleSpan(float padding)
+    {
+        this(padding, DEFAULT_COLOR, DEFAULT_COLOR);
+    }
+
+    public CircleSpan(int circleColor)
+    {
+        this(DEFAULT_PADDING, circleColor, DEFAULT_COLOR);
+    }
+
+    public CircleSpan(int circleColor, int textColor)
+    {
+        this(DEFAULT_PADDING, circleColor, textColor);
+    }
+
+    public CircleSpan(float padding, int circleColor, int textColor)
     {
         super();
-        TypedArray ta = context.getTheme().obtainStyledAttributes(
-                new int[] {R.attr.colorAccent, android.R.attr.textColorPrimaryInverse});
-        mCircleColor = ta.getColor(0, ContextCompat.getColor(context, R.color.greenA700));
-        //noinspection ResourceType
-        mTextColor = ta.getColor(1, 0);
-        ta.recycle();
-        mPadding = context.getResources().getDimension(R.dimen.padding_circle);
+
+        this.padding = padding; // XXX
+        this.circleColor = circleColor;
+        this.textColor = textColor;
     }
 
     @Override
     public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm)
     {
-        return Math.round(paint.measureText(text, start, end) + mPadding * 2); // left + right
+        return Math.round(paint.measureText(text, start, end) + padding * 2); // left + right
     }
 
     @Override
@@ -43,17 +64,33 @@ public class CircleSpan extends ReplacementSpan
             int bottom, Paint paint)
     {
         if (TextUtils.isEmpty(text))
-        {
             return;
-        }
+
+        // Get text size and the old paint color
         float textSize = paint.measureText(text, start, end);
-        paint.setColor(mCircleColor);
-        // ensure radius covers at least 2 characters even if there is only 1
-        canvas.drawCircle(x + textSize / 2 + mPadding, // center X
+        int oldColor = paint.getColor();
+
+        // If circle color given, then set to paint with that, otherwise use default in paint
+        if (circleColor != 0)
+            paint.setColor(circleColor);
+
+        // Ensure radius covers at least 2 characters even if there is only 1
+        canvas.drawCircle(x + textSize / 2 + padding, // center X
                 (top + bottom) / 2, // center Y
-                (text.length() == 1 ? textSize : textSize / 2) + mPadding, // radius
+                (text.length() == 1 ? textSize : textSize / 2) + padding, // radius
                 paint);
-        paint.setColor(mTextColor);
-        canvas.drawText(text, start, end, mPadding + x, y, paint);
+
+        // If text color given, then set to paint with that, otherwise use default in paint
+        // Set this to the oldColor (default) in case a circleColor was specified
+        if (textColor != 0)
+            paint.setColor(textColor);
+        else
+            paint.setColor(oldColor);
+
+        // Draw text
+        canvas.drawText(text, start, end, padding + x, y, paint);
+
+        // Reset color back to original
+        paint.setColor(oldColor);
     }
 }

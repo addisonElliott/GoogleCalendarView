@@ -54,6 +54,8 @@ public class AppBarLayout extends android.support.design.widget.AppBarLayout
 
         onOffsetChangedListener = new OffsetUpdateListener();
         addOnOffsetChangedListener(onOffsetChangedListener);
+
+        //ViewCompat.setElevation(AppBarLayout.this, 32.0f);
     }
 
     @Override
@@ -94,9 +96,15 @@ public class AppBarLayout extends android.support.design.widget.AppBarLayout
             verticalOffset = Math.abs(verticalOffset);
 
             if (verticalOffset == appBarLayout.getTotalScrollRange()) // Completely collapsed
+            {
+                //ViewCompat.setElevation(AppBarLayout.this, 32.0f);
                 state = STATE_COLLAPSED;
+            }
             else if (verticalOffset == 0) // Completely expanded
+            {
+                //ViewCompat.setElevation(AppBarLayout.this, 32.0f);
                 state = STATE_EXPANDED;
+            }
             else if (state == STATE_COLLAPSED) // Transitioning, previous state was collapsed so it is expanding
                 state = STATE_EXPANDING;
             else if (state == STATE_EXPANDED) // Transitioning, previous state was expanded so it is collapsing

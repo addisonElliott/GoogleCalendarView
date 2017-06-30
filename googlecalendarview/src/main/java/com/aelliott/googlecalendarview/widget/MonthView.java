@@ -228,7 +228,7 @@ class MonthView extends RecyclerView
                     SpannableString spannable = new SpannableString(dayString);
                     if (mSelectedPosition == adapterPosition)
                     {
-                        spannable.setSpan(new CircleSpan(textView.getContext()), 0,
+                        spannable.setSpan(new CircleSpan(), 0,
                                 dayString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     else if (mEvents.contains(dayIndex))

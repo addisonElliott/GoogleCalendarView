@@ -1,10 +1,12 @@
 package com.aelliott.googlecalendarview.calendar;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.AttributeSet;
@@ -32,7 +34,8 @@ public class MonthView extends RecyclerView
 {
     public interface CellTextSpannableListener
     {
-        void onCreateCellText(MonthView view, int dayNumber, boolean isSelected);
+        void onCreateCellText(MonthView view, Spannable spannable, int dayNumber,
+                boolean isSelected);
     }
 
     private static final String TAG = "MonthView";
@@ -298,7 +301,7 @@ public class MonthView extends RecyclerView
 
                 if (cellTextSpannableListener != null)
                 {
-                    cellTextSpannableListener.onCreateCellText(MonthView.this, dayNumber,
+                    cellTextSpannableListener.onCreateCellText(MonthView.this, spannable, dayNumber,
                             (position == selectedPosition));
                 }
                 else
@@ -306,12 +309,12 @@ public class MonthView extends RecyclerView
                     // Selected item gets circle around it
                     if (position == selectedPosition)
                     {
-                        spannable.setSpan(new CircleSpan(viewHolder.textView.getContext()), 0,
+                        spannable.setSpan(new CircleSpan(28.0f, Color.RED, Color.WHITE), 0,
                                 dayString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     else if (displayMonthDate.withDayOfMonth(dayNumber).isEqual(LocalDate.now()))
                     {
-                        spannable.setSpan(new CircleSpan(viewHolder.textView.getContext()), 0,
+                        spannable.setSpan(new CircleSpan(), 0,
                                 dayString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     // TODO Handle events span

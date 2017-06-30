@@ -6,6 +6,7 @@
     android:id="@+id/appBarLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:stateListAnimator="@animator/elevation_change"
     android:fitsSystemWindows="true"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:behavior_dragType="allowAll"

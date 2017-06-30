@@ -7,6 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:layout_marginTop="8dp"
     android:divider="@drawable/horizontal_divider"
     android:orientation="vertical"
     android:showDividers="middle"

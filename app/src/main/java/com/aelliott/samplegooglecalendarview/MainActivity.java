@@ -2,10 +2,14 @@ package com.aelliott.samplegooglecalendarview;
 
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,6 +17,11 @@ import android.view.View;
 
 import com.aelliott.googlecalendarview.appbar.AppBarLayout;
 import com.aelliott.googlecalendarview.calendar.CalendarView;
+import com.aelliott.googlecalendarview.calendar.MonthView;
+import com.aelliott.googlecalendarview.calendar.MonthViewPagerAdapter;
+import com.aelliott.googlecalendarview.text.style.CircleSpan;
+
+import org.threeten.bp.LocalDate;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,8 +48,15 @@ public class MainActivity extends AppCompatActivity
         {
             ButterKnife.bind(this, view);
 
-            //calendarView.setMonthViewLayout(R.layout.month_view);
-            //calendarView.setMonthViewHeaderLayout(R.layout.month_view_item_header);
+            calendarView.setMonthViewLayout(R.layout.month_view);
+            calendarView.setMonthViewHeaderLayout(R.layout.month_view_item_header);
+            calendarView.setMonthViewCellLayout(R.layout.month_view_item_cell);
+
+            MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)calendarView.getAdapter();
+            adapter.setOnCreateViewListener(new CreateMonthView());
+
+            ViewCompat.setElevation(appBarLayout, 32.0f);
+            //appBarLayout.setElevation(32.0f);
         }
 
         @OnClick(R.id.relativeLayout_datePickerButton)
@@ -60,6 +76,48 @@ public class MainActivity extends AppCompatActivity
                 default:
                     // If transitioning to a new state, do nothing
                     return;
+            }
+        }
+
+        class CreateMonthView implements MonthViewPagerAdapter.OnCreateViewListener
+        {
+            @Override
+            public void onCreateView(MonthView view)
+            {
+                // Upon creation of new view, set the month view to call CellTextSpannable class
+                // This is called for each day item being rendered in the TextView. A custom spannable
+                // is setup to allow for effects such as:
+                // Colored circle when day is today or current selected
+                // Small dots under text to indicate events are located here
+                view.setCellTextSpannableListener(new CellTextSpannable());
+            }
+        }
+
+        class CellTextSpannable implements MonthView.CellTextSpannableListener
+        {
+            @Override
+            public void onCreateCellText(MonthView view, Spannable spannable, int dayNumber,
+                    boolean isSelected)
+            {
+                float padding = view.getResources().getDimension(
+                        R.dimen.calendar_day_circle_padding);
+                int whiteColor = ContextCompat.getColor(view.getContext(), R.color.white);
+                int blackPrimary = ContextCompat.getColor(view.getContext(), R.color.blackPrimary);
+                int primaryColor = ContextCompat.getColor(view.getContext(), R.color.colorPrimary);
+                int primaryColor50 = ContextCompat.getColor(view.getContext(),
+                        R.color.colorPrimary50);
+
+                if (isSelected)
+                {
+                    spannable.setSpan(new CircleSpan(padding, primaryColor50, blackPrimary), 0,
+                            spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                else if (view.getDisplayMonthDate().withDayOfMonth(dayNumber).isEqual(
+                        LocalDate.now()))
+                {
+                    spannable.setSpan(new CircleSpan(padding, primaryColor, whiteColor), 0,
+                            spannable.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
             }
         }
     }

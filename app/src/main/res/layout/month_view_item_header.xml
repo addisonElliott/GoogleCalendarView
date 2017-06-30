@@ -4,6 +4,6 @@
           style="@style/TextAppearance.AppCompat.Caption"
           android:layout_width="match_parent"
           android:layout_height="30dp"
-          android:background="@color/colorAccent"
+          android:background="@color/colorPrimary"
           android:gravity="center"
           tools:text="S"/>
