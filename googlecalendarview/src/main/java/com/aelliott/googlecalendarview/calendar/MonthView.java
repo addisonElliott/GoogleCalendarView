@@ -5,6 +5,8 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aelliott.googlecalendarview.R;
+import com.aelliott.googlecalendarview.text.style.CircleSpan;
 
 import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDate;
@@ -27,6 +30,11 @@ import static com.aelliott.googlecalendarview.calendar.CalendarView.DAY_WEEK_DIS
 
 public class MonthView extends RecyclerView
 {
+    public interface CellTextSpannableListener
+    {
+        void onCreateCellText(MonthView view, int dayNumber, boolean isSelected);
+    }
+
     private static final String TAG = "MonthView";
 
     private static final int VIEW_TYPE_HEADER = 0;
@@ -46,6 +54,11 @@ public class MonthView extends RecyclerView
     private int headerLayout = 0;
     @LayoutRes
     private int cellLayout = 0;
+    private int monthFirstDayStartOffset = 0;
+    private int monthItemCount = 0;
+    private int selectedPosition = -1;
+
+    private CellTextSpannableListener cellTextSpannableListener;
 
     public MonthView(Context context)
     {
@@ -63,7 +76,7 @@ public class MonthView extends RecyclerView
 
         setLayoutManager(new GridLayoutManager(context, GRID_COLUMN_COUNT));
 
-        Adapter adapter = new Adapter(context);
+        Adapter adapter = new Adapter();
         setAdapter(adapter);
     }
 
@@ -79,7 +92,7 @@ public class MonthView extends RecyclerView
         Adapter adapter = (Adapter)getAdapter();
         if (adapter != null)
         {
-            adapter.update();
+            update();
             adapter.notifyDataSetChanged();
         }
     }
@@ -97,7 +110,7 @@ public class MonthView extends RecyclerView
         Adapter adapter = (Adapter)getAdapter();
         if (adapter != null)
         {
-            adapter.update();
+            update();
             adapter.notifyDataSetChanged();
         }
     }
@@ -115,7 +128,7 @@ public class MonthView extends RecyclerView
         Adapter adapter = (Adapter)getAdapter();
         if (adapter != null)
         {
-            adapter.update();
+            update();
             adapter.notifyDataSetChanged();
         }
     }
@@ -173,46 +186,69 @@ public class MonthView extends RecyclerView
         }
     }
 
+    public int getSelectedPosition()
+    {
+        return selectedPosition;
+    }
+
+    public void setSelectedPosition(int selectedPosition)
+    {
+        int dayNumber = selectedPosition + 1 - GRID_COLUMN_COUNT - monthFirstDayStartOffset;
+
+        // If the selected position is invalid then do not adjust it or if the previous selected
+        // position equals the new position
+        if (dayNumber <= 0 || selectedPosition == this.selectedPosition)
+            return;
+
+        Adapter adapter = (Adapter)getAdapter();
+        if (adapter != null)
+        {
+            // If the previous selected position was valid, then notify that it has changed since
+            // it is not selected anymore
+            if (this.selectedPosition >= 0)
+                adapter.notifyItemChanged(this.selectedPosition);
+
+            this.selectedPosition = selectedPosition;
+
+            // Notify the new selected position to update its view
+            adapter.notifyItemChanged(selectedPosition);
+        }
+    }
+
+    public void update()
+    {
+        // If the displayMonthDate is invalid, then do nothing
+        if (displayMonthDate == null)
+            return;
+
+        // Get beginning date of the month
+        LocalDate startOfMonth = displayMonthDate.withDayOfMonth(1);
+        // Get date of the start of the week. Thus, if today is Thursday, June 1 and the start of
+        // the week is Sunday, then the startDate is Sunday, May 28th. The OrSame part means that
+        // if today is the start of the week, then return the same date
+        LocalDate startDate = startOfMonth.with(TemporalAdjusters.previousOrSame(startDayOfWeek));
+        // Get the difference between startOfMonth and startDate to get the number of blank cells
+        // to show in the calendar before putting the first day of the month
+        monthFirstDayStartOffset = (int)ChronoUnit.DAYS.between(startDate, startOfMonth);
+
+        // Total number of items in adapter is one row for the weekday headers plus the empty cell
+        // offset and then the number of days in the month
+        monthItemCount = GRID_COLUMN_COUNT + monthFirstDayStartOffset + displayMonthDate
+                .getMonth()
+                .length(displayMonthDate.isLeapYear());
+    }
+
+    public void setCellTextSpannableListener(CellTextSpannableListener cellTextSpannableListener)
+    {
+        this.cellTextSpannableListener = cellTextSpannableListener;
+    }
+
     public class Adapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     {
-        private Context context;
-
-        private int monthFirstDayStartOffset = 0;
-        private int monthItemCount = 0;
-
-        public Adapter(Context context)
-        {
-            this.context = context;
-        }
-
-        public void update()
-        {
-            // If the displayMonthDate is invalid, then do nothing
-            if (displayMonthDate == null)
-                return;
-
-            // Get beginning date of the month
-            LocalDate startOfMonth = displayMonthDate.withDayOfMonth(1);
-            // Get date of the start of the week. Thus, if today is Thursday, June 1 and the start of
-            // the week is Sunday, then the startDate is Sunday, May 28th. The OrSame part means that
-            // if today is the start of the week, then return the same date
-            LocalDate startDate = startOfMonth.with(
-                    TemporalAdjusters.previousOrSame(startDayOfWeek));
-            // Get the difference between startOfMonth and startDate to get the number of blank cells
-            // to show in the calendar before putting the first day of the month
-            monthFirstDayStartOffset = (int)ChronoUnit.DAYS.between(startDate, startOfMonth);
-
-            // Total number of items in adapter is one row for the weekday headers plus the empty cell
-            // offset and then the number of days in the month
-            monthItemCount = GRID_COLUMN_COUNT + monthFirstDayStartOffset + displayMonthDate
-                    .getMonth()
-                    .length(displayMonthDate.isLeapYear());
-        }
-
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
         {
-            LayoutInflater inflater = LayoutInflater.from(context);
+            LayoutInflater inflater = LayoutInflater.from(MonthView.this.getContext());
 
             if (viewType == VIEW_TYPE_HEADER)
             {
@@ -252,9 +288,53 @@ public class MonthView extends RecyclerView
 
                 // Only print
                 if (dayNumber <= 0)
+                {
                     viewHolder.textView.setText("");
+                    return;
+                }
+
+                String dayString = String.format(locale, "%d", dayNumber);
+                SpannableString spannable = new SpannableString(dayString);
+
+                if (cellTextSpannableListener != null)
+                {
+                    cellTextSpannableListener.onCreateCellText(MonthView.this, dayNumber,
+                            (position == selectedPosition));
+                }
                 else
-                    viewHolder.textView.setText(String.format(locale, "%d", dayNumber));
+                {
+                    // Selected item gets circle around it
+                    if (position == selectedPosition)
+                    {
+                        spannable.setSpan(new CircleSpan(viewHolder.textView.getContext()), 0,
+                                dayString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                    else if (displayMonthDate.withDayOfMonth(dayNumber).isEqual(LocalDate.now()))
+                    {
+                        spannable.setSpan(new CircleSpan(viewHolder.textView.getContext()), 0,
+                                dayString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    }
+                    // TODO Handle events span
+                }
+
+                viewHolder.textView.setText(spannable, TextView.BufferType.SPANNABLE);
+                //viewHolder.textView.setText(String.format(locale, "%d", dayNumber));
+
+                final int adapterPosition = viewHolder.getAdapterPosition();
+                viewHolder.textView.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        setSelectedPosition(adapterPosition);
+                    }
+                });
+
+                // Selected item gets circle around it
+                if (position == selectedPosition)
+                {
+
+                }
             }
         }
 
