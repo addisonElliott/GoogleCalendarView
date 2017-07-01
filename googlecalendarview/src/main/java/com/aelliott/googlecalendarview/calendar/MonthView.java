@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,8 +33,35 @@ import static com.aelliott.googlecalendarview.calendar.CalendarView.DAY_WEEK_DIS
 
 public class MonthView extends RecyclerView
 {
+    /**
+     * Callback interface for month view change events
+     */
+    public interface OnChangeListener
+    {
+        /**
+         * Fired when selected day has been changed via UI interaction
+         *
+         * @param date new day that was selected day
+         */
+        void onSelectedDayChange(LocalDate date);
+    }
+
+    /**
+     * Callback interface for when the cell text is being created for each month day
+     * <p>
+     * Allows for custom creation of each month day via text spans such as when the day is today or
+     * when the item is selected.
+     */
     public interface CellTextSpannableListener
     {
+        /**
+         * Fired when a text view is being created for a given month day cell
+         *
+         * @param view       month view that is creating the cell
+         * @param spannable  current spannable containing the string to be styled
+         * @param dayNumber  day number of the month view that is being created
+         * @param isSelected whether the cell is selected or not
+         */
         void onCreateCellText(MonthView view, Spannable spannable, int dayNumber,
                 boolean isSelected);
     }
@@ -48,6 +76,8 @@ public class MonthView extends RecyclerView
      */
     private static final int GRID_COLUMN_COUNT = 7;
 
+    public static final int POSITION_INVALID = -1;
+
     private LocalDate displayMonthDate = null;
     private Locale locale = Locale.US;
     private DayOfWeek startDayOfWeek = DayOfWeek.SUNDAY;
@@ -59,7 +89,9 @@ public class MonthView extends RecyclerView
     private int cellLayout = 0;
     private int monthFirstDayStartOffset = 0;
     private int monthItemCount = 0;
-    private int selectedPosition = -1;
+    private int selectedPosition = POSITION_INVALID;
+
+    private OnChangeListener onChangeListener;
 
     private CellTextSpannableListener cellTextSpannableListener;
 
@@ -198,24 +230,60 @@ public class MonthView extends RecyclerView
     {
         int dayNumber = selectedPosition + 1 - GRID_COLUMN_COUNT - monthFirstDayStartOffset;
 
-        // If the selected position is invalid then do not adjust it or if the previous selected
-        // position equals the new position
-        if (dayNumber <= 0 || selectedPosition == this.selectedPosition)
+        // If the selected position is invalid (unless it is -1 meaning the position is being reset
+        // to nothing, or if the previous selected position equals the new position, then do nothing
+        if ((selectedPosition != POSITION_INVALID && dayNumber <= 0) || selectedPosition == this.selectedPosition)
             return;
 
         Adapter adapter = (Adapter)getAdapter();
-        if (adapter != null)
-        {
-            // If the previous selected position was valid, then notify that it has changed since
-            // it is not selected anymore
-            if (this.selectedPosition >= 0)
-                adapter.notifyItemChanged(this.selectedPosition);
 
-            this.selectedPosition = selectedPosition;
+        // If the previous selected position was valid, then notify that it has changed since
+        // it is not selected anymore
+        if (this.selectedPosition != POSITION_INVALID)
+            adapter.notifyItemChanged(this.selectedPosition);
 
-            // Notify the new selected position to update its view
+        this.selectedPosition = selectedPosition;
+
+        // If the new selected position is valid, then notify that it has changed
+        if (selectedPosition != POSITION_INVALID)
             adapter.notifyItemChanged(selectedPosition);
-        }
+
+        if (onChangeListener != null)
+            onChangeListener.onSelectedDayChange(
+                    selectedPosition == POSITION_INVALID ? null : getDisplayMonthDate().withDayOfMonth(
+                            dayNumber));
+    }
+
+    public void setSelectedDay(int dayNumber)
+    {
+        int selectedPosition = dayNumber == POSITION_INVALID ? POSITION_INVALID : dayNumber - 1 + GRID_COLUMN_COUNT + monthFirstDayStartOffset;
+
+        // If the selected position is invalid (unless it is -1 meaning the position is being reset
+        // to nothing, or if the previous selected position equals the new position, then do nothing
+        if ((selectedPosition != POSITION_INVALID && dayNumber <= 0) || selectedPosition == this.selectedPosition)
+            return;
+
+        Log.v("CTL", "Valid day: " + dayNumber);
+
+        Adapter adapter = (Adapter)getAdapter();
+
+        // If the previous selected position was valid, then notify that it has changed since
+        // it is not selected anymore
+        if (this.selectedPosition != POSITION_INVALID)
+            adapter.notifyItemChanged(this.selectedPosition);
+
+        this.selectedPosition = selectedPosition;
+
+        // If the new selected position is valid, then notify that it has changed
+        if (selectedPosition != POSITION_INVALID)
+            adapter.notifyItemChanged(selectedPosition);
+
+        if (onChangeListener != null)
+            onChangeListener.onSelectedDayChange(
+                    selectedPosition == POSITION_INVALID ? null : getDisplayMonthDate().withDayOfMonth(
+                            dayNumber));
+
+        Log.v("CTL", "Done: " + dayNumber);
     }
 
     public void update()
@@ -239,6 +307,11 @@ public class MonthView extends RecyclerView
         monthItemCount = GRID_COLUMN_COUNT + monthFirstDayStartOffset + displayMonthDate
                 .getMonth()
                 .length(displayMonthDate.isLeapYear());
+    }
+
+    public void setOnChangeListener(OnChangeListener onChangeListener)
+    {
+        this.onChangeListener = onChangeListener;
     }
 
     public void setCellTextSpannableListener(CellTextSpannableListener cellTextSpannableListener)
@@ -314,8 +387,8 @@ public class MonthView extends RecyclerView
                     }
                     else if (displayMonthDate.withDayOfMonth(dayNumber).isEqual(LocalDate.now()))
                     {
-                        spannable.setSpan(new CircleSpan(), 0,
-                                dayString.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        spannable.setSpan(new CircleSpan(), 0, dayString.length(),
+                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     }
                     // TODO Handle events span
                 }

@@ -6,11 +6,13 @@ import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.aelliott.googlecalendarview.R;
 
 import org.threeten.bp.DayOfWeek;
+import org.threeten.bp.LocalDate;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,6 +20,19 @@ import java.util.Locale;
 
 public class CalendarView extends ViewPager
 {
+    /**
+     * Callback interface for calendar view change events
+     */
+    public interface OnChangeListener
+    {
+        /**
+         * Fired when selected day has been changed via UI interaction
+         *
+         * @param date new day that was selected day
+         */
+        void onSelectedDayChange(LocalDate date);
+    }
+
     /**
      * @hide
      */
@@ -37,6 +52,9 @@ public class CalendarView extends ViewPager
     private int monthViewHeaderLayout = 0;
     @LayoutRes
     private int monthViewCellLayout = 0;
+
+    private OnChangeListener onChangeListener;
+    private final OnMonthViewChange onMonthViewChange = new OnMonthViewChange();
 
     public CalendarView(Context context)
     {
@@ -84,7 +102,7 @@ public class CalendarView extends ViewPager
     public void setupDefaultAdapter()
     {
         // Create new pager adapter and set it as the current adapter for the ViewPager
-        MonthViewPagerAdapter adapter = new MonthViewPagerAdapter(getContext());
+        MonthViewPagerAdapter adapter = new MonthViewPagerAdapter(getContext(), onMonthViewChange);
         setAdapter(adapter);
 
         // Set current item to be in the middle of the circular pager adapter
@@ -101,7 +119,27 @@ public class CalendarView extends ViewPager
             @Override
             public void onPageSelected(int position)
             {
+                Log.v("CTL", "On Page Selected: " + position);
+                // Get adapter and the month view of the selected page. If the selected page has a
+                // null view, then return because it means the page has not been created yet
+                MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)getAdapter();
 
+                // Get old month view and set selected position to invalid
+                // This is useful so that when the user comes back there is a onChangeSelectedDay
+                // event fired since the old selected day will NOT equal new selected day
+                MonthView oldView = adapter.getView(getCurrentItem());
+                if (oldView != null)
+                    oldView.setSelectedPosition(MonthView.POSITION_INVALID);
+
+                // Get new month view
+                MonthView newView = adapter.getView(position);
+                if (newView == null)
+                    return;
+
+                Log.v("CTL", "On Page Selected Finished: " + position);
+
+                // Set new page to the first of the month
+                newView.setSelectedDay(1);
             }
 
             @Override
@@ -180,7 +218,9 @@ public class CalendarView extends ViewPager
 
         // Force refresh of all items in adapter. Each item should be deleted and re-instantiate will
         // be called
+        int oldCurrentItem = getCurrentItem();
         setAdapter(getAdapter());
+        setCurrentItem(oldCurrentItem);
     }
 
     @LayoutRes
@@ -216,6 +256,21 @@ public class CalendarView extends ViewPager
             MonthView view = (MonthView)getChildAt(i);
 
             view.setCellLayout(monthViewCellLayout);
+        }
+    }
+
+    public void setOnChangeListener(OnChangeListener onChangeListener)
+    {
+        this.onChangeListener = onChangeListener;
+    }
+
+    class OnMonthViewChange implements MonthView.OnChangeListener
+    {
+        @Override
+        public void onSelectedDayChange(LocalDate date)
+        {
+            if (date != null && onChangeListener != null)
+                onChangeListener.onSelectedDayChange(date);
         }
     }
 }

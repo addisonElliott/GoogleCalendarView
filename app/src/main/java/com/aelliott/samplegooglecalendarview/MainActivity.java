@@ -3,7 +3,6 @@ package com.aelliott.samplegooglecalendarview;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.aelliott.googlecalendarview.Coordinator;
 import com.aelliott.googlecalendarview.appbar.AppBarLayout;
 import com.aelliott.googlecalendarview.calendar.CalendarView;
 import com.aelliott.googlecalendarview.calendar.MonthView;
@@ -43,10 +44,16 @@ public class MainActivity extends AppCompatActivity
         ActionBar actionBar;
         @BindView(R.id.calendarView)
         CalendarView calendarView;
+        @BindView(R.id.textView_datePicker)
+        TextView datePickerTextView;
 
         public AppBarLayoutHolder(View view)
         {
             ButterKnife.bind(this, view);
+
+            // Setup coordinator class that synchronizes the data between the text view title in
+            // toolbar and the calendar view
+            Coordinator coordinator = new Coordinator(datePickerTextView, calendarView);
 
             calendarView.setMonthViewLayout(R.layout.month_view);
             calendarView.setMonthViewHeaderLayout(R.layout.month_view_item_header);
@@ -54,9 +61,6 @@ public class MainActivity extends AppCompatActivity
 
             MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)calendarView.getAdapter();
             adapter.setOnCreateViewListener(new CreateMonthView());
-
-            ViewCompat.setElevation(appBarLayout, 32.0f);
-            //appBarLayout.setElevation(32.0f);
         }
 
         @OnClick(R.id.relativeLayout_datePickerButton)

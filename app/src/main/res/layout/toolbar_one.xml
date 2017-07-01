@@ -76,7 +76,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/view_centerInParent"
                     android:maxLines="1"
-                    android:text="June 2016"
+                    android:text="Test"
                     android:textAppearance="@style/AppTheme.Toolbar.Subtitle"/>
 
                 <ImageView

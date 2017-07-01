@@ -3,7 +3,7 @@
     <item>
         <objectAnimator
             android:propertyName="elevation"
-            android:valueTo="24dp"
+            android:valueTo="@dimen/toolbar_elevation"
             android:valueType="floatType"
             android:duration="1"/>
     </item>

@@ -21,6 +21,11 @@ public class Coordinator
     {
         this.titleTextView = titleTextView;
         this.calendarView = calendarView;
+
+        if (this.calendarView != null)
+        {
+            this.calendarView.setOnChangeListener(new CalendarViewChange());
+        }
     }
 
     void reset()
@@ -28,9 +33,9 @@ public class Coordinator
 
     }
 
-    private void sync(long dayMillis, View originator)
+    private void sync(LocalDate date, View originator)
     {
-
+        updateTitle(date);
     }
 
     private void updateTitle(LocalDate date)
@@ -57,5 +62,14 @@ public class Coordinator
     public void setCalendarView(CalendarView calendarView)
     {
         this.calendarView = calendarView;
+    }
+
+    class CalendarViewChange implements CalendarView.OnChangeListener
+    {
+        @Override
+        public void onSelectedDayChange(LocalDate date)
+        {
+            sync(date, calendarView);
+        }
     }
 }

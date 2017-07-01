@@ -40,15 +40,23 @@ public class MonthViewPagerAdapter extends PagerAdapter
     private OnCreateViewListener createViewListener;
     @LayoutRes
     private int monthViewLayout = 0;
+    private MonthView.OnChangeListener onChangeListener;
 
     public MonthViewPagerAdapter(Context context)
     {
-        this(context, null);
+        this(context, null, null);
     }
 
-    public MonthViewPagerAdapter(Context context, LocalDate startDate)
+    public MonthViewPagerAdapter(Context context, MonthView.OnChangeListener onChangeListener)
+    {
+        this(context, null, onChangeListener);
+    }
+
+    public MonthViewPagerAdapter(Context context, LocalDate startDate,
+            MonthView.OnChangeListener onChangeListener)
     {
         this.context = context;
+        this.onChangeListener = onChangeListener;
 
         if (startDate == null)
             startDate = LocalDate.now();
@@ -87,7 +95,7 @@ public class MonthViewPagerAdapter extends PagerAdapter
         view.setDayOfWeekDisplay(parent.getDayOfWeekDisplay());
         view.setHeaderLayout(parent.getMonthViewHeaderLayout());
         view.setCellLayout(parent.getMonthViewCellLayout());
-
+        view.setOnChangeListener(onChangeListener);
         view.setDisplayMonthDate(months.get(position));
 
         // Notify user that a new view has been created so they can add any styles
