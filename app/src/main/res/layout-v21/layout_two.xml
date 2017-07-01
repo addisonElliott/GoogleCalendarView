@@ -7,10 +7,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:fitsSystemWindows="true"
+    android:stateListAnimator="@animator/elevation_change"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:behavior_dragType="allowAll"
     app:behavior_scrollTopAction="open"
-    app:expanded="true"
+    app:expanded="false"
     app:layout_behavior="com.aelliott.googlecalendarview.appbar.CalendarScrollingBehavior"
     app:rotateViewId="@+id/imageView_datePickerArrow">
 
@@ -54,30 +55,14 @@
                 android:clickable="true"
                 android:orientation="vertical">
 
-                <View
-                    android:id="@+id/view_centerInParent"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_centerVertical="true"/>
-
-                <TextView
-                    android:id="@+id/textView_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@+id/view_centerInParent"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Section 1"
-                    android:textAppearance="@style/AppTheme.Toolbar.Title"/>
-
                 <TextView
                     android:id="@+id/textView_datePicker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/view_centerInParent"
+                    android:layout_centerVertical="true"
                     android:maxLines="1"
                     android:text="June 2016"
-                    android:textAppearance="@style/AppTheme.Toolbar.Subtitle"/>
+                    android:textAppearance="@style/AppTheme.Toolbar.Title"/>
 
                 <ImageView
                     android:id="@+id/imageView_datePickerArrow"
@@ -94,4 +79,3 @@
     </android.support.design.widget.CollapsingToolbarLayout>
 
 </com.aelliott.googlecalendarview.appbar.AppBarLayout>
-
