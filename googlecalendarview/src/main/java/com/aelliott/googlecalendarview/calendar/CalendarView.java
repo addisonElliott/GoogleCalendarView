@@ -44,15 +44,6 @@ public class CalendarView extends ViewPager
     public static final int DAY_WEEK_DISPLAY_BRIEF = 1;
     public static final int DAY_WEEK_DISPLAY_FULL = 2;
 
-    private Locale locale = Locale.US;
-    private DayOfWeek startDayOfWeek = DayOfWeek.SUNDAY;
-    @DayOfWeekDisplay
-    private int dayOfWeekDisplay = DAY_WEEK_DISPLAY_NARROW;
-    @LayoutRes
-    private int monthViewHeaderLayout = 0;
-    @LayoutRes
-    private int monthViewCellLayout = 0;
-
     private OnChangeListener onChangeListener;
     private final OnMonthViewChange onMonthViewChange = new OnMonthViewChange();
 
@@ -67,6 +58,7 @@ public class CalendarView extends ViewPager
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CalendarView);
 
+        // TODO Get attributes
         try
         {
             a.getInteger(R.styleable.CalendarView_startDayOfWeek, 1);
@@ -85,7 +77,7 @@ public class CalendarView extends ViewPager
     {
         MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)getAdapter();
 
-        View child = adapter.getView(getCurrentItem());
+        View child = adapter.getView(getCurrentItem(), true);
         if (child != null)
         {
             child.measure(widthMeasureSpec,
@@ -106,10 +98,13 @@ public class CalendarView extends ViewPager
         setAdapter(adapter);
 
         // Set current item to be in the middle of the circular pager adapter
-        setCurrentItem(adapter.getCount() / 2);
+        setCurrentItem(adapter.getRealCount() / 2);
+        //setOffscreenPageLimit(6);
 
         addOnPageChangeListener(new OnPageChangeListener()
         {
+            private int scrollState;
+
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
             {
@@ -120,9 +115,33 @@ public class CalendarView extends ViewPager
             public void onPageSelected(int position)
             {
                 Log.v("CTL", "On Page Selected: " + position);
+
+
                 // Get adapter and the month view of the selected page. If the selected page has a
                 // null view, then return because it means the page has not been created yet
                 MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)getAdapter();
+
+
+                if (position == 0)
+                {
+                    setCurrentItem(adapter.getRealCount() - 1, false);
+                    Log.v("CTL", "Set current item to last");
+                }
+                else if (position == adapter.getCount() - 1)
+                {
+                    setCurrentItem(0, false);
+                    Log.v("CTL", "Set current item to 0");
+                }
+
+
+
+                // Convert virtual to actual position. (Special functionality for infinite scrolling)
+                position = adapter.virtualToActualPosition(position);
+
+                // With the virtual position converted to actual, check if the previous and new positions
+                // are the same, if so do nothing
+                //if (position == getCurrentItem())
+                //    return;
 
                 // Get old month view and set selected position to invalid
                 // This is useful so that when the user comes back there is a onChangeSelectedDay
@@ -136,74 +155,113 @@ public class CalendarView extends ViewPager
                 if (newView == null)
                     return;
 
-                Log.v("CTL", "On Page Selected Finished: " + position);
-
-                // Set new page to the first of the month
+                // Select the first day of the new month to show
                 newView.setSelectedDay(1);
             }
 
             @Override
             public void onPageScrollStateChanged(int state)
             {
-                // If page state changed to idle, then it just finished switching pages
-                if (state == SCROLL_STATE_IDLE)
+                if (state == ViewPager.SCROLL_STATE_IDLE)
                 {
-
+                    if (scrollState != ViewPager.SCROLL_STATE_SETTLING)
+                    {
+                        //handleSetNextItem();
+                    }
                 }
+
+                scrollState = state;
+            }
+
+            private void handleSetNextItem()
+            {
+                /*final int lastPosition = getAdapter().getRealCount() - 1;
+                if (getCurrentItem() == 0)
+                {
+                    setCurrentItem(lastPosition, false);
+                }
+                else if (getCurrentItem() == lastPosition)
+                {
+                    setCurrentItem(0, false);
+                }*/
             }
         });
     }
 
+    public void syncPages(int position)
+    {
+        // Swiping left if the new position is LESS THAN the current position
+        boolean swipeLeft = (position < getCurrentItem());
+        if (position == 0)
+        {
+
+        }
+    }
+
+    @Override
+    public void setCurrentItem(int item)
+    {
+        // Offset the current item to ensure there is space to scroll
+        setCurrentItem(item, false);
+    }
+
+    @Override
+    public void setCurrentItem(int item, boolean smoothScroll)
+    {
+        MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)getAdapter();
+
+        if (adapter.getRealCount() == 0)
+        {
+            super.setCurrentItem(item, smoothScroll);
+        }
+        else
+        {
+            // The item number is incremented by one because there is the first page that is
+            // actually the last page
+            super.setCurrentItem(item + 1);
+        }
+    }
+
+    @Override
+    public int getCurrentItem()
+    {
+        MonthViewPagerAdapter adapter = (MonthViewPagerAdapter)getAdapter();
+
+        if (adapter.getRealCount() == 0)
+            return super.getCurrentItem();
+        else
+            return (adapter.virtualToActualPosition(super.getCurrentItem()));
+    }
+
     public Locale getLocale()
     {
-        return locale;
+        return ((MonthViewPagerAdapter)getAdapter()).getLocale();
     }
 
     public void setLocale(Locale locale)
     {
-        this.locale = locale;
-
-        for (int i = 0; i < getChildCount(); ++i)
-        {
-            MonthView view = (MonthView)getChildAt(i);
-
-            view.setLocale(locale);
-        }
+        ((MonthViewPagerAdapter)getAdapter()).setLocale(locale);
     }
 
     public DayOfWeek getStartDayOfWeek()
     {
-        return startDayOfWeek;
+        return ((MonthViewPagerAdapter)getAdapter()).getStartDayOfWeek();
     }
 
     public void setStartDayOfWeek(DayOfWeek startDayOfWeek)
     {
-        this.startDayOfWeek = startDayOfWeek;
-
-        for (int i = 0; i < getChildCount(); ++i)
-        {
-            MonthView view = (MonthView)getChildAt(i);
-
-            view.setStartDayOfWeek(startDayOfWeek);
-        }
+        ((MonthViewPagerAdapter)getAdapter()).setStartDayOfWeek(startDayOfWeek);
     }
 
     @DayOfWeekDisplay
     public int getDayOfWeekDisplay()
     {
-        return dayOfWeekDisplay;
+        return ((MonthViewPagerAdapter)getAdapter()).getDayOfWeekDisplay();
     }
 
     public void setDayOfWeekDisplay(@DayOfWeekDisplay int dayOfWeekDisplay)
     {
-        this.dayOfWeekDisplay = dayOfWeekDisplay;
-
-        for (int i = 0; i < getChildCount(); ++i)
-        {
-            MonthView view = (MonthView)getChildAt(i);
-
-            view.setDayOfWeekDisplay(dayOfWeekDisplay);
-        }
+        ((MonthViewPagerAdapter)getAdapter()).setDayOfWeekDisplay(dayOfWeekDisplay);
     }
 
     public void setMonthViewLayout(@LayoutRes int monthViewLayout)
@@ -219,44 +277,30 @@ public class CalendarView extends ViewPager
         // Force refresh of all items in adapter. Each item should be deleted and re-instantiate will
         // be called
         int oldCurrentItem = getCurrentItem();
-        setAdapter(getAdapter());
+        setAdapter(adapter);
         setCurrentItem(oldCurrentItem);
     }
 
     @LayoutRes
     public int getMonthViewHeaderLayout()
     {
-        return monthViewHeaderLayout;
+        return ((MonthViewPagerAdapter)getAdapter()).getMonthViewHeaderLayout();
     }
 
     public void setMonthViewHeaderLayout(@LayoutRes int monthViewHeaderLayout)
     {
-        this.monthViewHeaderLayout = monthViewHeaderLayout;
-
-        for (int i = 0; i < getChildCount(); ++i)
-        {
-            MonthView view = (MonthView)getChildAt(i);
-
-            view.setHeaderLayout(monthViewHeaderLayout);
-        }
+        ((MonthViewPagerAdapter)getAdapter()).setMonthViewHeaderLayout(monthViewHeaderLayout);
     }
 
     @LayoutRes
     public int getMonthViewCellLayout()
     {
-        return monthViewCellLayout;
+        return ((MonthViewPagerAdapter)getAdapter()).getMonthViewCellLayout();
     }
 
     public void setMonthViewCellLayout(@LayoutRes int monthViewCellLayout)
     {
-        this.monthViewCellLayout = monthViewCellLayout;
-
-        for (int i = 0; i < getChildCount(); ++i)
-        {
-            MonthView view = (MonthView)getChildAt(i);
-
-            view.setCellLayout(monthViewCellLayout);
-        }
+        ((MonthViewPagerAdapter)getAdapter()).setMonthViewCellLayout(monthViewCellLayout);
     }
 
     public void setOnChangeListener(OnChangeListener onChangeListener)

@@ -263,8 +263,6 @@ public class MonthView extends RecyclerView
         if ((selectedPosition != POSITION_INVALID && dayNumber <= 0) || selectedPosition == this.selectedPosition)
             return;
 
-        Log.v("CTL", "Valid day: " + dayNumber);
-
         Adapter adapter = (Adapter)getAdapter();
 
         // If the previous selected position was valid, then notify that it has changed since
@@ -282,8 +280,6 @@ public class MonthView extends RecyclerView
             onChangeListener.onSelectedDayChange(
                     selectedPosition == POSITION_INVALID ? null : getDisplayMonthDate().withDayOfMonth(
                             dayNumber));
-
-        Log.v("CTL", "Done: " + dayNumber);
     }
 
     public void update()
